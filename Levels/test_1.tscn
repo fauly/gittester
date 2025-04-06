@@ -11,7 +11,7 @@
 [node name="World" type="Node3D"]
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
-transform = Transform3D(100, 0, 0, 0, 1, 0, 0, 0, 100, 0, 0, 0)
+transform = Transform3D(20, 0, 0, 0, 1, 0, 0, 0, 20, 0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
 shape = SubResource("BoxShape3D_7gp1h")
@@ -26,3 +26,4 @@ light_angular_distance = 45.0
 
 [node name="PlayerRoot" parent="." instance=ExtResource("1_eo0b4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.109646, 1.5, 0.311191)
+zoom_enabled = false

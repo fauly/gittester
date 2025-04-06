@@ -57,6 +57,13 @@ extends Node3D
 			camera_pivot.invert_x = value
 		if character:
 			character.camera_invert_x = value
+			
+@export var zoom_enabled: bool = true:
+	set(value):
+		zoom_enabled = value
+		if camera_pivot:
+			camera_pivot.zoom_enabled = value
+		
 
 @export_range(2.0, 15.0, 0.5) var camera_distance: float = 5.0:
 	set(value):
@@ -119,6 +126,7 @@ func _ready():
 		camera_pivot.mouse_sensitivity = camera_sensitivity
 		camera_pivot.invert_y = camera_invert_y
 		camera_pivot.invert_x = camera_invert_x
+		camera_pivot.zoom_enabled = zoom_enabled
 		camera_pivot.min_x_rotation = min_x_rotation
 		camera_pivot.max_x_rotation = max_x_rotation
 		camera_pivot.camera_distance_min = camera_distance_min
