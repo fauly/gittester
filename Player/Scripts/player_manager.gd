@@ -26,10 +26,10 @@ func _ready():
 	
 	# Load default settings if none provided
 	if not movement_settings:
-		movement_settings = load("res://Player/ResourceInstances/DefaultMovementSettings.tres")
+		movement_settings = load("res://Player/Resources/DefaultMovementSettings.tres")
 	
 	if not camera_settings:
-		camera_settings = load("res://Player/ResourceInstances/DefaultCameraSettings.tres")
+		camera_settings = load("res://Player/Resources/DefaultCameraSettings.tres")
 	
 	# Apply settings to player and camera
 	apply_settings()
@@ -44,12 +44,19 @@ func apply_settings() -> void:
 	# Apply movement settings
 	if character and movement_settings:
 		character.move_speed = movement_settings.move_speed
+		character.acceleration = movement_settings.acceleration
+		character.deceleration = movement_settings.deceleration
 		character.jump_strength = movement_settings.jump_strength
 		character.max_jump_hold_time = movement_settings.max_jump_hold_time
 		character.jump_add_force = movement_settings.jump_add_force
 		character.gravity = movement_settings.gravity
+		character.fall_gravity_multiplier = movement_settings.fall_gravity_multiplier
+		character.air_control = movement_settings.air_control
+		character.air_drag = movement_settings.air_drag
 		character.rotation_speed = movement_settings.rotation_speed
 		character.rotate_with_movement = movement_settings.rotate_with_movement
+		character.coyote_time = movement_settings.coyote_time
+		character.jump_buffer_time = movement_settings.jump_buffer_time
 	
 	# Apply camera settings
 	if camera_pivot and camera_settings:

@@ -26,4 +26,3 @@ light_angular_distance = 45.0
 
 [node name="PlayerRoot" parent="." instance=ExtResource("1_eo0b4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.109646, 1.5, 0.311191)
-zoom_enabled = false

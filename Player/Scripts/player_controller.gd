@@ -2,12 +2,19 @@ extends CharacterBody3D
 
 # These will be set by the PlayerManager
 @export var move_speed: float = 5.0
+@export var acceleration: float = 30.0 
+@export var deceleration: float = 40.0
 @export var jump_strength: float = 4.5
-@export var max_jump_hold_time: float = 0.4   # Maximum time to add extra force
-@export var jump_add_force: float = 12.0      # Force added while holding jump
-@export var gravity: float = 9.8
-@export var rotation_speed: float = 10.0
+@export var max_jump_hold_time: float = 0.2
+@export var jump_add_force: float = 15.0
+@export var gravity: float = 15.0
+@export var fall_gravity_multiplier: float = 1.5
+@export var air_control: float = 0.6
+@export var air_drag: float = 0.03
+@export var rotation_speed: float = 15.0
 @export var rotate_with_movement: bool = true
+@export var coyote_time: float = 0.1
+@export var jump_buffer_time: float = 0.1
 
 # Camera settings that will be received from CameraPivot
 @export var camera_sensitivity: float = 0.3
@@ -21,10 +28,17 @@ var camera_pivot: Node3D
 # Jump variables
 var is_jumping: bool = false
 var jump_hold_timer: float = 0.0
+var time_since_grounded: float = 0.0
+var buffered_jump: bool = false
+var buffered_jump_timer: float = 0.0
+var was_on_floor: bool = false
 
 # Internal camera control variables from signals
 var camera_horizontal_angle: float = 0
 var camera_vertical_angle: float = 0
+
+# Target velocity for smoother acceleration
+var target_velocity: Vector3 = Vector3.ZERO
 
 func _ready():
 	# Find the camera pivot
@@ -43,16 +57,41 @@ func _physics_process(delta):
 	if camera_pivot and is_instance_valid(camera_pivot):
 		camera_pivot.global_position = Vector3(global_position.x, global_position.y + 1.5, global_position.z)
 	
-	# Handle jumping
+	# Track time since grounded for coyote time
 	if is_on_floor():
-		# Reset jump state when touching floor
-		is_jumping = false
-		jump_hold_timer = 0.0
+		time_since_grounded = 0
 		
-		# Begin a new jump
-		if Input.is_action_just_pressed("jump"):
-			is_jumping = true
-			velocity.y = jump_strength  # Initial jump force
+		# Only reset jumping state when we first land
+		if not was_on_floor:
+			is_jumping = false
+		
+		was_on_floor = true
+	else:
+		time_since_grounded += delta
+		was_on_floor = false
+	
+	# Handle buffered jump input
+	if Input.is_action_just_pressed("jump"):
+		if not is_on_floor() and time_since_grounded > coyote_time:
+			buffered_jump = true
+			buffered_jump_timer = 0
+	
+	# If we landed and had a buffered jump, execute it
+	if is_on_floor() and buffered_jump and buffered_jump_timer < jump_buffer_time:
+		perform_jump()
+		buffered_jump = false
+		
+	# Count down buffered jump timer
+	if buffered_jump:
+		buffered_jump_timer += delta
+		if buffered_jump_timer >= jump_buffer_time:
+			buffered_jump = false
+	
+	# Handle jumping
+	if is_on_floor() or time_since_grounded <= coyote_time:
+		# Reset jump state when touching floor
+		if not is_jumping and Input.is_action_just_pressed("jump"):
+			perform_jump()
 	else:
 		# Add more force while holding space during a jump
 		if is_jumping and Input.is_action_pressed("jump"):
@@ -68,14 +107,60 @@ func _physics_process(delta):
 			# Jump height control ends when button is released
 			is_jumping = false
 	
-	# Apply gravity
-	if not is_on_floor():
-		velocity.y -= gravity * delta
+	# Apply appropriate gravity - higher when falling
+	var actual_gravity = gravity
+	if velocity.y < 0:
+		actual_gravity *= fall_gravity_multiplier
 	
-	# Get input direction and handle movement
+	velocity.y -= actual_gravity * delta
+	
+	# Get input direction for movement
 	var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	
-	# Default movement direction is based on the character's own orientation
+	# Calculate movement direction based on camera orientation
+	var direction = get_movement_direction(input_dir)
+	
+	# Set target velocity based on input
+	target_velocity.x = direction.x * move_speed
+	target_velocity.z = direction.z * move_speed
+	
+	# Apply acceleration or deceleration based on input presence
+	var horizontal_vel = Vector3(velocity.x, 0, velocity.z)
+	var target_horizontal = Vector3(target_velocity.x, 0, target_velocity.z)
+	
+	var accel_rate = acceleration
+	if not is_on_floor():
+		accel_rate *= air_control
+		
+		# Apply air drag (subtle slowdown when not providing input)
+		if direction.length() < 0.1:
+			horizontal_vel = horizontal_vel.lerp(Vector3.ZERO, air_drag)
+	
+	if direction.length() > 0.1:
+		# Accelerating
+		horizontal_vel = horizontal_vel.lerp(target_horizontal, accel_rate * delta)
+	else:
+		# Decelerating (stopping)
+		horizontal_vel = horizontal_vel.lerp(Vector3.ZERO, deceleration * delta)
+	
+	# Apply the calculated horizontal velocity
+	velocity.x = horizontal_vel.x
+	velocity.z = horizontal_vel.z
+	
+	# Rotate player to face movement direction
+	if direction.length() > 0.1 and rotate_with_movement:
+		rotate_player_to(direction, delta)
+	
+	move_and_slide()
+
+func perform_jump():
+	is_jumping = true
+	jump_hold_timer = 0.0
+	velocity.y = jump_strength
+	
+# Get movement direction based on camera orientation
+func get_movement_direction(input_dir: Vector2) -> Vector3:
+	# Default movement direction based on character's orientation
 	var direction = Vector3(input_dir.x, 0, input_dir.y).normalized()
 	
 	# If we have a camera, use camera-relative movement
@@ -87,24 +172,9 @@ func _physics_process(delta):
 		var right = Vector3(camera_basis.x.x, 0, camera_basis.x.z).normalized()
 		
 		# Calculate the movement direction based on camera orientation
-		# For input_dir.y, positive is forward (W key), negative is backward (S key)
-		# We negate the forward vector for input_dir.y to get the correct direction
 		direction = (forward * -input_dir.y + right * input_dir.x).normalized()
 	
-	if direction:
-		# Apply horizontal movement - always move relative to camera
-		velocity.x = direction.x * move_speed
-		velocity.z = direction.z * move_speed
-		
-		# Only rotate the character if rotate_with_movement is enabled
-		if rotate_with_movement:
-			rotate_player_to(direction, delta)
-	else:
-		# Decelerate when no input
-		velocity.x = move_toward(velocity.x, 0, move_speed)
-		velocity.z = move_toward(velocity.z, 0, move_speed)
-	
-	move_and_slide()
+	return direction
 
 # Separate function for player rotation
 func rotate_player_to(direction: Vector3, delta: float) -> void:
