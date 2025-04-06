@@ -14,8 +14,9 @@ signal zoom_changed(new_zoom)
 @export var invert_y: bool = false
 @export var invert_x: bool = false
 
-@onready var spring_arm: SpringArm3D = $SpringArm3D
-@onready var camera: Camera3D = $SpringArm3D/Camera3D
+# These will be set in _ready
+var spring_arm: SpringArm3D
+var camera: Camera3D
 
 # Camera rotation limits (in degrees)
 @export var max_x_rotation: float = 70.0
@@ -29,6 +30,16 @@ var rotation_x: float = 0
 var rotation_y: float = 0
 
 func _ready():
+	# Get references to nodes
+	spring_arm = $SpringArm3D
+	if not spring_arm:
+		push_error("SpringArm3D node not found - camera functionality will be limited")
+		return
+		
+	camera = $SpringArm3D/Camera3D
+	if not camera:
+		push_error("Camera3D node not found - camera functionality will be limited")
+	
 	# Reset the camera position
 	rotation_x = 0
 	rotation_y = 0
@@ -42,11 +53,19 @@ func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func _process(delta):
+	# Skip if spring arm is not available
+	if not spring_arm:
+		return
+	
 	# We'll handle camera rotation in _input for mouse motion
 	# Just emit the current rotation angles each frame
 	camera_rotated.emit(rotation_y, rotation_x)
 
 func _input(event):
+	# Skip if spring arm is not available
+	if not spring_arm:
+		return
+	
 	# Toggle mouse capture with Escape key
 	if event.is_action_pressed("ui_cancel"):
 		if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
@@ -85,6 +104,9 @@ func set_sensitivity(value: float) -> void:
 
 # Method to change zoom externally
 func set_zoom(value: float) -> void:
+	if not spring_arm:
+		return
+		
 	var new_zoom = clamp(value, camera_distance_min, camera_distance_max)
 	if spring_arm.spring_length != new_zoom:
 		spring_arm.spring_length = new_zoom
@@ -92,4 +114,6 @@ func set_zoom(value: float) -> void:
 
 # Get current camera direction
 func get_camera_direction() -> Vector3:
+	if not camera:
+		return Vector3.FORWARD.normalized() * -1
 	return -camera.global_transform.basis.z 
