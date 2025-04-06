@@ -1,7 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://3nej1nrb5kij"]
+[gd_scene load_steps=5 format=3 uid="uid://3nej1nrb5kij"]
 
-[ext_resource type="PackedScene" uid="uid://bnevdwvi3e8at" path="res://Player/Scripts/Player.tscn" id="1_eo0b4"]
-[ext_resource type="Script" uid="uid://dixd6jxfwr0bu" path="res://Player/Scripts/player_controller.gd" id="2_m3r8k"]
+[ext_resource type="PackedScene" uid="uid://f4mn8ilarrc3" path="res://Player/Player.tscn" id="1_eo0b4"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7gp1h"]
 
@@ -21,10 +20,9 @@ shape = SubResource("BoxShape3D_7gp1h")
 mesh = SubResource("BoxMesh_eo0b4")
 surface_material_override/0 = SubResource("StandardMaterial3D_o64qd")
 
-[node name="CharacterBody3D" parent="." instance=ExtResource("1_eo0b4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.929309, 1.5, 0.350805)
-script = ExtResource("2_m3r8k")
-camera_sensitivity = 0.05
-
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.866025, 0.5, 0, -0.5, 0.866025, 0, 0, 0, 1, 0, 0, 0)
+light_angular_distance = 45.0
+
+[node name="PlayerWithCamera" parent="." instance=ExtResource("1_eo0b4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.123335, 1.5, 0.0471998)

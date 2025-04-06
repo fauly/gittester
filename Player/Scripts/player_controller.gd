@@ -1,35 +1,17 @@
 extends CharacterBody3D
 
+# These will be set by the PlayerManager
 @export var move_speed: float = 5.0
 @export var jump_strength: float = 4.5
 @export var gravity: float = 9.8
 @export var rotation_speed: float = 10.0
-@export var rotate_with_movement: bool = true  # Set to false to not rotate when moving
+@export var rotate_with_movement: bool = true
 
-@export_category("Camera Settings")
-@export var camera_sensitivity: float = 0.3:
-	set(value):
-		camera_sensitivity = value
-		if camera_pivot and is_instance_valid(camera_pivot):
-			camera_pivot.set_sensitivity(value)
-
-@export var camera_invert_y: bool = false:
-	set(value):
-		camera_invert_y = value
-		if camera_pivot and is_instance_valid(camera_pivot):
-			camera_pivot.invert_y = value
-
-@export var camera_invert_x: bool = false:
-	set(value):
-		camera_invert_x = value
-		if camera_pivot and is_instance_valid(camera_pivot):
-			camera_pivot.invert_x = value
-
-@export_range(2.0, 15.0, 0.5) var camera_distance: float = 5.0:
-	set(value):
-		camera_distance = value
-		if camera_pivot and is_instance_valid(camera_pivot):
-			camera_pivot.set_zoom(value)
+# Camera settings that will be received from CameraPivot
+@export var camera_sensitivity: float = 0.3
+@export var camera_invert_y: bool = false
+@export var camera_invert_x: bool = false
+@export var camera_distance: float = 5.0
 
 # The camera is now a sibling node, not a child
 var camera_pivot: Node3D
@@ -37,9 +19,6 @@ var camera_pivot: Node3D
 # Internal camera control variables from signals
 var camera_horizontal_angle: float = 0
 var camera_vertical_angle: float = 0
-
-# Get the gravity from the project settings to be synced with RigidBody nodes
-var gravity_value = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 func _ready():
 	# Find the camera pivot
@@ -52,12 +31,6 @@ func _ready():
 	camera_pivot.sensitivity_changed.connect(_on_sensitivity_changed)
 	camera_pivot.camera_rotated.connect(_on_camera_rotated)
 	camera_pivot.zoom_changed.connect(_on_zoom_changed)
-	
-	# Initialize camera with player settings
-	camera_pivot.set_sensitivity(camera_sensitivity)
-	camera_pivot.invert_y = camera_invert_y
-	camera_pivot.invert_x = camera_invert_x
-	camera_pivot.set_zoom(camera_distance)
 
 func _physics_process(delta):
 	# Update camera position to follow player if camera exists
@@ -111,25 +84,14 @@ func rotate_player_to(direction: Vector3, delta: float) -> void:
 
 # Signal handlers
 func _on_sensitivity_changed(new_value: float) -> void:
-	# Only update if value changed externally (not from this script)
-	if new_value != camera_sensitivity:
-		camera_sensitivity = new_value
+	camera_sensitivity = new_value
 
 func _on_camera_rotated(horizontal: float, vertical: float) -> void:
 	camera_horizontal_angle = horizontal
 	camera_vertical_angle = vertical
-	# You can use these angles for gameplay mechanics if needed
 
 func _on_zoom_changed(new_zoom: float) -> void:
-	# Only update if value changed externally (not from this script)
-	if new_zoom != camera_distance:
-		camera_distance = new_zoom
-		
-	# Adjust player speed based on camera distance
-	if camera_distance > 7.0:
-		move_speed = 7.0  # Move faster when zoomed out
-	else:
-		move_speed = 5.0  # Normal speed when zoomed in
+	camera_distance = new_zoom
 
 # Example of how to control the camera from the player
 func increase_camera_sensitivity() -> void:

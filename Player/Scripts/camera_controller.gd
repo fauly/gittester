@@ -5,25 +5,20 @@ signal sensitivity_changed(new_value)
 signal camera_rotated(horizontal_angle, vertical_angle)
 signal zoom_changed(new_zoom)
 
-@export var mouse_sensitivity: float = 0.3:
-	set(value):
-		if value != mouse_sensitivity:
-			mouse_sensitivity = value
-			sensitivity_changed.emit(value)
-
+# These will be set by the PlayerManager
+@export var mouse_sensitivity: float = 0.3
 @export var invert_y: bool = false
 @export var invert_x: bool = false
+@export var zoom_enabled: bool = true
+@export var min_x_rotation: float = -30.0
+@export var max_x_rotation: float = 70.0
+@export var camera_distance_min: float = 2.0
+@export var camera_distance_max: float = 10.0
+@export var zoom_speed: float = 0.5
 
 # These will be set in _ready
 var spring_arm: SpringArm3D
 var camera: Camera3D
-
-# Camera rotation limits (in degrees)
-@export var max_x_rotation: float = 70.0
-@export var min_x_rotation: float = -30.0
-@export var camera_distance_min: float = 2.0
-@export var camera_distance_max: float = 10.0
-@export var zoom_speed: float = 0.5
 
 # Current rotation values
 var rotation_x: float = 0
@@ -92,7 +87,7 @@ func _input(event):
 		spring_arm.rotation.x = rotation_x
 	
 	# Handle mouse wheel for zoom
-	if event is InputEventMouseButton:
+	if event is InputEventMouseButton and zoom_enabled:
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
 			set_zoom(spring_arm.spring_length - zoom_speed)
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN and event.pressed:
@@ -101,6 +96,7 @@ func _input(event):
 # Method to change sensitivity externally
 func set_sensitivity(value: float) -> void:
 	mouse_sensitivity = value
+	sensitivity_changed.emit(value)
 
 # Method to change zoom externally
 func set_zoom(value: float) -> void:
