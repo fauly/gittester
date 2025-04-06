@@ -22,7 +22,7 @@ use_collision = true
 size = Vector3(50, 1, 50)
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5697, -15.8252)
+transform = Transform3D(1.505, 0, 0, 0, 1.505, 0, 0, 0, 1.505, 0, 5.11759, -15.8252)
 texture = SubResource("ViewportTexture_o64qd")
 region_rect = Rect2(0.095, 0, 0, 0)
 
