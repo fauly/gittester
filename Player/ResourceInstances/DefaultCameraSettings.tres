@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CameraSettings" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Player/Resources/CameraSettings.gd" id="1_mj2xt"]
+
+[resource]
+script = ExtResource("1_mj2xt")
+sensitivity = 0.3
+invert_y = false
+invert_x = false
+zoom_enabled = true
+min_x_rotation = -30.0
+max_x_rotation = 70.0
+distance = 5.0
+distance_min = 2.0
+distance_max = 10.0
+zoom_speed = 0.5 

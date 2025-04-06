@@ -1,117 +1,15 @@
 extends Node3D
 
-# Movement variables
-@export_category("Movement Settings")
-@export var move_speed: float = 5.0:
-	set(value):
-		move_speed = value
-		if character:
-			character.move_speed = value
-
-@export var jump_strength: float = 4.5:
-	set(value):
-		jump_strength = value
-		if character:
-			character.jump_strength = value
-
-@export var max_jump_hold_time: float = 0.4:
-	set(value):
-		max_jump_hold_time = value
-		if character:
-			character.max_jump_hold_time = value
-
-@export var jump_add_force: float = 12.0:
-	set(value):
-		jump_add_force = value
-		if character:
-			character.jump_add_force = value
-
-@export var gravity: float = 9.8:
-	set(value):
-		gravity = value
-		if character:
-			character.gravity = value
-
-@export var rotation_speed: float = 10.0:
-	set(value):
-		rotation_speed = value
-		if character:
-			character.rotation_speed = value
-
-@export var rotate_with_movement: bool = true:
-	set(value):
-		rotate_with_movement = value
-		if character:
-			character.rotate_with_movement = value
-
-# Camera variables
-@export_category("Camera Settings")
-@export var camera_sensitivity: float = 0.3:
-	set(value):
-		camera_sensitivity = value
-		if camera_pivot:
-			camera_pivot.mouse_sensitivity = value
-		if character:
-			character.camera_sensitivity = value
-
-@export var camera_invert_y: bool = false:
-	set(value):
-		camera_invert_y = value
-		if camera_pivot:
-			camera_pivot.invert_y = value
-		if character:
-			character.camera_invert_y = value
-
-@export var camera_invert_x: bool = false:
-	set(value):
-		camera_invert_x = value
-		if camera_pivot:
-			camera_pivot.invert_x = value
-		if character:
-			character.camera_invert_x = value
-			
-@export var zoom_enabled: bool = true:
-	set(value):
-		zoom_enabled = value
-		if camera_pivot:
-			camera_pivot.zoom_enabled = value
-
-@export_range(2.0, 15.0, 0.5) var camera_distance: float = 5.0:
-	set(value):
-		camera_distance = value
-		if camera_pivot and camera_pivot.has_method("set_zoom"):
-			camera_pivot.set_zoom(value)
-		if character:
-			character.camera_distance = value
-
-@export_category("Camera Limits")
-@export_range(-90.0, 0.0) var min_x_rotation: float = -30.0:
-	set(value):
-		min_x_rotation = value
-		if camera_pivot:
-			camera_pivot.min_x_rotation = value
-
-@export_range(0.0, 90.0) var max_x_rotation: float = 70.0:
-	set(value):
-		max_x_rotation = value
-		if camera_pivot:
-			camera_pivot.max_x_rotation = value
-
-@export_range(0.1, 10.0) var camera_distance_min: float = 2.0:
-	set(value):
-		camera_distance_min = value
-		if camera_pivot:
-			camera_pivot.camera_distance_min = value
-
-@export_range(5.0, 20.0) var camera_distance_max: float = 10.0:
-	set(value):
-		camera_distance_max = value
-		if camera_pivot:
-			camera_pivot.camera_distance_max = value
+@export_category("Settings")
+@export var movement_settings: PlayerMovementSettings
+@export var camera_settings: CameraSettings
 
 # Node references
 var character: CharacterBody3D
 var camera_pivot: Node3D
+
+# For synchronizing values from resources to character and camera
+var _syncing: bool = false
 
 func _ready():
 	# Get references to child nodes
@@ -126,32 +24,108 @@ func _ready():
 		push_error("CameraPivot not found! Camera will not function correctly.")
 		return
 	
-	# Apply all settings
-	character.move_speed = move_speed
-	character.jump_strength = jump_strength
-	character.gravity = gravity
-	character.rotation_speed = rotation_speed
-	character.rotate_with_movement = rotate_with_movement
-	character.max_jump_hold_time = max_jump_hold_time
-	character.jump_add_force = jump_add_force
+	# Load default settings if none provided
+	if not movement_settings:
+		movement_settings = load("res://Player/ResourceInstances/DefaultMovementSettings.tres")
 	
-	if camera_pivot:
-		camera_pivot.mouse_sensitivity = camera_sensitivity
-		camera_pivot.invert_y = camera_invert_y
-		camera_pivot.invert_x = camera_invert_x
-		if camera_pivot.has_method("set_zoom_enabled"):
-			camera_pivot.zoom_enabled = zoom_enabled
-		camera_pivot.min_x_rotation = min_x_rotation
-		camera_pivot.max_x_rotation = max_x_rotation
-		camera_pivot.camera_distance_min = camera_distance_min
-		camera_pivot.camera_distance_max = camera_distance_max
+	if not camera_settings:
+		camera_settings = load("res://Player/ResourceInstances/DefaultCameraSettings.tres")
+	
+	# Apply settings to player and camera
+	apply_settings()
+	
+	# Connect signals for updating values back to settings
+	connect_signals()
+
+# Apply all settings to character and camera
+func apply_settings() -> void:
+	_syncing = true
+	
+	# Apply movement settings
+	if character and movement_settings:
+		character.move_speed = movement_settings.move_speed
+		character.jump_strength = movement_settings.jump_strength
+		character.max_jump_hold_time = movement_settings.max_jump_hold_time
+		character.jump_add_force = movement_settings.jump_add_force
+		character.gravity = movement_settings.gravity
+		character.rotation_speed = movement_settings.rotation_speed
+		character.rotate_with_movement = movement_settings.rotate_with_movement
+	
+	# Apply camera settings
+	if camera_pivot and camera_settings:
+		camera_pivot.mouse_sensitivity = camera_settings.sensitivity
+		camera_pivot.invert_y = camera_settings.invert_y
+		camera_pivot.invert_x = camera_settings.invert_x
+		camera_pivot.zoom_enabled = camera_settings.zoom_enabled
+		camera_pivot.min_x_rotation = camera_settings.min_x_rotation
+		camera_pivot.max_x_rotation = camera_settings.max_x_rotation
+		camera_pivot.camera_distance_min = camera_settings.distance_min
+		camera_pivot.camera_distance_max = camera_settings.distance_max
+		camera_pivot.zoom_speed = camera_settings.zoom_speed
 		
 		# Set initial zoom
 		if camera_pivot.has_method("set_zoom"):
-			camera_pivot.set_zoom(camera_distance)
+			camera_pivot.set_zoom(camera_settings.distance)
 	
-	# Keep character and camera_pivot in sync
-	character.camera_sensitivity = camera_sensitivity
-	character.camera_invert_y = camera_invert_y
-	character.camera_invert_x = camera_invert_x
-	character.camera_distance = camera_distance
+	# Keep character and camera synchronized
+	if character and camera_settings:
+		character.camera_sensitivity = camera_settings.sensitivity
+		character.camera_invert_y = camera_settings.invert_y 
+		character.camera_invert_x = camera_settings.invert_x
+		character.camera_distance = camera_settings.distance
+	
+	_syncing = false
+
+# Connect signals from components to this manager
+func connect_signals() -> void:
+	if camera_pivot:
+		camera_pivot.sensitivity_changed.connect(_on_sensitivity_changed)
+		camera_pivot.zoom_changed.connect(_on_zoom_changed)
+
+# Handle changes from the camera and update resources
+func _on_sensitivity_changed(value: float) -> void:
+	if _syncing or not camera_settings:
+		return
+	
+	camera_settings.sensitivity = value
+	
+	# Update player if needed
+	if character:
+		character.camera_sensitivity = value
+
+func _on_zoom_changed(value: float) -> void:
+	if _syncing or not camera_settings:
+		return
+	
+	camera_settings.distance = value
+	
+	# Update player if needed
+	if character:
+		character.camera_distance = value
+
+# Create and save current settings as a new preset
+func save_settings_preset(preset_name: String) -> void:
+	var movement_path = "res://Player/Resources/" + preset_name + "_Movement.tres"
+	var camera_path = "res://Player/Resources/" + preset_name + "_Camera.tres"
+	
+	ResourceSaver.save(movement_settings, movement_path)
+	ResourceSaver.save(camera_settings, camera_path)
+	
+	print("Saved settings presets: ", preset_name)
+
+# Load a preset by name
+func load_settings_preset(preset_name: String) -> void:
+	var movement_path = "res://Player/Resources/" + preset_name + "_Movement.tres"
+	var camera_path = "res://Player/Resources/" + preset_name + "_Camera.tres"
+	
+	var new_movement = ResourceLoader.load(movement_path)
+	var new_camera = ResourceLoader.load(camera_path)
+	
+	if new_movement:
+		movement_settings = new_movement
+	
+	if new_camera:
+		camera_settings = new_camera
+	
+	apply_settings()
+	print("Loaded settings preset: ", preset_name)

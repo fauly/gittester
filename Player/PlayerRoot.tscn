@@ -1,7 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://bpgd34fgyhkc7"]
+[gd_scene load_steps=8 format=3 uid="uid://bpgd34fgyhkc7"]
 
 [ext_resource type="Script" path="res://Player/Scripts/player_manager.gd" id="1_bapdc"]
+[ext_resource type="Resource" path="res://Player/Resources/DefaultMovementSettings.tres" id="2_t3uwd"]
 [ext_resource type="Script" path="res://Player/Scripts/player_controller.gd" id="2_qkdm7"]
+[ext_resource type="Resource" path="res://Player/Resources/DefaultCameraSettings.tres" id="3_p7r7a"]
 [ext_resource type="Script" path="res://Player/Scripts/camera_controller.gd" id="3_8jkwy"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_t4ysy"]
@@ -10,6 +12,8 @@
 
 [node name="PlayerRoot" type="Node3D"]
 script = ExtResource("1_bapdc")
+movement_settings = ExtResource("2_t3uwd")
+camera_settings = ExtResource("3_p7r7a")
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="."]
 script = ExtResource("2_qkdm7")

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PlayerMovementSettings" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Player/Resources/PlayerMovementSettings.gd" id="1_50r3s"]
+
+[resource]
+script = ExtResource("1_50r3s")
+move_speed = 5.0
+jump_strength = 4.5
+max_jump_hold_time = 0.4
+jump_add_force = 12.0
+gravity = 9.8
+rotation_speed = 10.0
+rotate_with_movement = true 
