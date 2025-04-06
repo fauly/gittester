@@ -56,7 +56,7 @@ func _physics_process(delta):
 		# Get the camera's forward and right vectors, but ignore Y component
 		var camera_basis = camera_pivot.global_transform.basis
 		# Forward is the negative Z direction in camera's local space
-		var forward = Vector3(camera_basis.z.x, 0, camera_basis.z.z).normalized()
+		var forward = (Vector3(camera_basis.z.x, 0, camera_basis.z.z).normalized())*-1
 		var right = Vector3(camera_basis.x.x, 0, camera_basis.x.z).normalized()
 		
 		# Calculate the movement direction based on camera orientation
