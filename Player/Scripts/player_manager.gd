@@ -14,6 +14,18 @@ extends Node3D
 		if character:
 			character.jump_strength = value
 
+@export var max_jump_hold_time: float = 0.4:
+	set(value):
+		max_jump_hold_time = value
+		if character:
+			character.max_jump_hold_time = value
+
+@export var jump_add_force: float = 12.0:
+	set(value):
+		jump_add_force = value
+		if character:
+			character.jump_add_force = value
+
 @export var gravity: float = 9.8:
 	set(value):
 		gravity = value
@@ -63,7 +75,6 @@ extends Node3D
 		zoom_enabled = value
 		if camera_pivot:
 			camera_pivot.zoom_enabled = value
-		
 
 @export_range(2.0, 15.0, 0.5) var camera_distance: float = 5.0:
 	set(value):
@@ -121,12 +132,15 @@ func _ready():
 	character.gravity = gravity
 	character.rotation_speed = rotation_speed
 	character.rotate_with_movement = rotate_with_movement
+	character.max_jump_hold_time = max_jump_hold_time
+	character.jump_add_force = jump_add_force
 	
 	if camera_pivot:
 		camera_pivot.mouse_sensitivity = camera_sensitivity
 		camera_pivot.invert_y = camera_invert_y
 		camera_pivot.invert_x = camera_invert_x
-		camera_pivot.zoom_enabled = zoom_enabled
+		if camera_pivot.has_method("set_zoom_enabled"):
+			camera_pivot.zoom_enabled = zoom_enabled
 		camera_pivot.min_x_rotation = min_x_rotation
 		camera_pivot.max_x_rotation = max_x_rotation
 		camera_pivot.camera_distance_min = camera_distance_min
@@ -140,4 +154,4 @@ func _ready():
 	character.camera_sensitivity = camera_sensitivity
 	character.camera_invert_y = camera_invert_y
 	character.camera_invert_x = camera_invert_x
-	character.camera_distance = camera_distance 
+	character.camera_distance = camera_distance

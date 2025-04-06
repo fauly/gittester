@@ -3,6 +3,8 @@ extends CharacterBody3D
 # These will be set by the PlayerManager
 @export var move_speed: float = 5.0
 @export var jump_strength: float = 4.5
+@export var max_jump_hold_time: float = 0.4   # Maximum time to add extra force
+@export var jump_add_force: float = 12.0      # Force added while holding jump
 @export var gravity: float = 9.8
 @export var rotation_speed: float = 10.0
 @export var rotate_with_movement: bool = true
@@ -15,6 +17,10 @@ extends CharacterBody3D
 
 # The camera is now a sibling node, not a child
 var camera_pivot: Node3D
+
+# Jump variables
+var is_jumping: bool = false
+var jump_hold_timer: float = 0.0
 
 # Internal camera control variables from signals
 var camera_horizontal_angle: float = 0
@@ -37,13 +43,34 @@ func _physics_process(delta):
 	if camera_pivot and is_instance_valid(camera_pivot):
 		camera_pivot.global_position = Vector3(global_position.x, global_position.y + 1.5, global_position.z)
 	
-	# Add gravity
+	# Handle jumping
+	if is_on_floor():
+		# Reset jump state when touching floor
+		is_jumping = false
+		jump_hold_timer = 0.0
+		
+		# Begin a new jump
+		if Input.is_action_just_pressed("jump"):
+			is_jumping = true
+			velocity.y = jump_strength  # Initial jump force
+	else:
+		# Add more force while holding space during a jump
+		if is_jumping and Input.is_action_pressed("jump"):
+			if jump_hold_timer < max_jump_hold_time:
+				# Use sine wave for smoother force reduction (starts at 1, ends at 0)
+				var time_progress = jump_hold_timer / max_jump_hold_time
+				var force_factor = sin((1.0 - time_progress) * PI/2)
+				
+				# Apply the extra force with the sine wave factor
+				velocity.y += jump_add_force * force_factor * delta
+				jump_hold_timer += delta
+		else:
+			# Jump height control ends when button is released
+			is_jumping = false
+	
+	# Apply gravity
 	if not is_on_floor():
 		velocity.y -= gravity * delta
-	
-	# Handle jump
-	if Input.is_action_just_pressed("jump") and is_on_floor():
-		velocity.y = jump_strength
 	
 	# Get input direction and handle movement
 	var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
