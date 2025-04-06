@@ -22,6 +22,13 @@ extends CharacterBody3D
 @export var camera_invert_x: bool = false
 @export var camera_distance: float = 5.0
 
+# Run Function (smooth accel fast decel when released)
+@export var run_speed_multiplier: float = 2.0
+@export var run_acceleration: float = 3.0
+@export var run_deceleration: float = 10.0
+var target_speed: float = 0.0
+var current_speed: float = 0.0
+
 # The camera is now a sibling node, not a child
 var camera_pivot: Node3D
 
@@ -39,6 +46,9 @@ var camera_vertical_angle: float = 0
 
 # Target velocity for smoother acceleration
 var target_velocity: Vector3 = Vector3.ZERO
+
+
+
 
 func _ready():
 	# Find the camera pivot
@@ -121,8 +131,8 @@ func _physics_process(delta):
 	var direction = get_movement_direction(input_dir)
 	
 	# Set target velocity based on input
-	target_velocity.x = direction.x * move_speed
-	target_velocity.z = direction.z * move_speed
+	target_velocity.x = direction.x * current_speed
+	target_velocity.z = direction.z * current_speed
 	
 	# Apply acceleration or deceleration based on input presence
 	var horizontal_vel = Vector3(velocity.x, 0, velocity.z)
@@ -150,6 +160,15 @@ func _physics_process(delta):
 	# Rotate player to face movement direction
 	if direction.length() > 0.1 and rotate_with_movement:
 		rotate_player_to(direction, delta)
+	
+	# Accel function
+	var is_running = Input.is_action_pressed("move_run")
+	if is_running:
+		target_speed = move_speed * run_speed_multiplier
+		current_speed = lerp(current_speed, target_speed, run_acceleration * delta)
+	else:
+		target_speed = move_speed
+		current_speed = lerp(current_speed, target_speed, run_deceleration * delta)
 	
 	move_and_slide()
 

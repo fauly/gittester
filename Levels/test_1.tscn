@@ -1,28 +1,73 @@
 [gd_scene load_steps=5 format=3 uid="uid://3nej1nrb5kij"]
 
-[ext_resource type="PackedScene" path="res://Player/PlayerRoot.tscn" id="1_eo0b4"]
+[ext_resource type="PackedScene" uid="uid://bpgd34fgyhkc7" path="res://Player/PlayerRoot.tscn" id="1_eo0b4"]
+[ext_resource type="Material" uid="uid://b6r7wfbh3cera" path="res://Levels/platforms.tres" id="1_m3r8k"]
+[ext_resource type="Texture2D" uid="uid://d2ptri4xyavtp" path="res://Levels/tech_no.png" id="3_o64qd"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_7gp1h"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_eo0b4"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o64qd"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_o64qd"]
+viewport_path = NodePath("Sprite3D/SubViewport")
 
 [node name="World" type="Node3D"]
-
-[node name="StaticBody3D" type="StaticBody3D" parent="."]
-transform = Transform3D(20, 0, 0, 0, 1, 0, 0, 0, 20, 0, 0, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
-shape = SubResource("BoxShape3D_7gp1h")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
-mesh = SubResource("BoxMesh_eo0b4")
-surface_material_override/0 = SubResource("StandardMaterial3D_o64qd")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.866025, 0.5, 0, -0.5, 0.866025, 0, 0, 0, 1, 0, 0, 0)
 light_angular_distance = 45.0
 
 [node name="PlayerRoot" parent="." instance=ExtResource("1_eo0b4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.109646, 1.5, 0.311191)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.11, 5, 0.311)
+
+[node name="DEMOFLOOR" type="CSGBox3D" parent="."]
+material_override = ExtResource("1_m3r8k")
+use_collision = true
+size = Vector3(50, 1, 50)
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5697, -15.8252)
+texture = SubResource("ViewportTexture_o64qd")
+region_rect = Rect2(0.095, 0, 0, 0)
+
+[node name="SubViewport" type="SubViewport" parent="Sprite3D"]
+handle_input_locally = false
+canvas_item_default_texture_filter = 0
+size = Vector2i(1152, 697)
+size_2d_override_stretch = true
+render_target_update_mode = 4
+
+[node name="TechNo" type="Sprite2D" parent="Sprite3D/SubViewport"]
+position = Vector2(578.5, 329)
+scale = Vector2(1.61313, 1.27096)
+texture = ExtResource("3_o64qd")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Sprite3D/SubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 84.0
+offset_top = 103.0
+offset_right = -587.0
+offset_bottom = -344.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 36
+bbcode_enabled = true
+text = "[shake rate=30.0 level=20]Just another \"Tech Bro\", "
+fit_content = true
+horizontal_alignment = 1
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="Sprite3D/SubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 600.0
+offset_top = 104.0
+offset_right = -71.0
+offset_bottom = -342.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 36
+bbcode_enabled = true
+text = "[wave amp=100.0 freq=5.0 connected=1][rainbow]\"Vibe Coding\""
+fit_content = true
+horizontal_alignment = 1

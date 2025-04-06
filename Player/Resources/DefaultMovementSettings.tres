@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="PlayerMovementSettings" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="PlayerMovementSettings" load_steps=2 format=3 uid="uid://b4b3bir66m6na"]
 
-[ext_resource type="Script" path="res://Player/Resources/MovementSettings.gd" id="1_50r3s"]
+[ext_resource type="Script" uid="uid://b7mf24gdtig5g" path="res://Player/Resources/MovementSettings.gd" id="1_50r3s"]
 
 [resource]
 script = ExtResource("1_50r3s")
@@ -8,8 +8,8 @@ move_speed = 5.0
 acceleration = 30.0
 deceleration = 40.0
 jump_strength = 4.5
-max_jump_hold_time = 0.2
-jump_add_force = 15.0
+max_jump_hold_time = 0.76
+jump_add_force = 8.615
 gravity = 15.0
 fall_gravity_multiplier = 1.5
 air_control = 0.6
@@ -17,4 +17,4 @@ air_drag = 0.03
 rotation_speed = 15.0
 rotate_with_movement = true
 coyote_time = 0.1
-jump_buffer_time = 0.1 
+jump_buffer_time = 0.1
