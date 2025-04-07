@@ -2,6 +2,15 @@
 # File utilities for CRUD and parsing
 extends Node
 
+var dir_access: DirAccess = null
+
+func _ready():
+	# Instantiate DirAccess for the project's root directory.
+	# This means all file operations will remain relative to res://
+	dir_access = DirAccess.open(ProjectSettings.globalize_path("res://"))
+	if dir_access == null:
+		push_error("Failed to initialize DirAccess for res://")
+
 # Check a file exists at file_path
 func exists(file_path: String) -> bool:
 	return FileAccess.file_exists(file_path)
@@ -10,7 +19,7 @@ func exists(file_path: String) -> bool:
 func open(file_path: String) -> String:
 	var file = false
 	if exists(file_path):
-		var err = file.open(file_path, FileAccess.READ)
+		var err = FileAccess.open(file_path, FileAccess.READ)
 		if err == OK:
 			var content = file.get_as_text()
 			file.close()
@@ -60,8 +69,22 @@ func cleanName(file_path: String) -> String:
 		var timestamp = str(Time.get_unix_time_from_system())  # Unix time is usually a 10-digit number.
 		new_name = cleaned_base + "_" + timestamp + extension
 	
+	if new_name != file_name:
+		var new_full_path = joinPath(file_path.get_base_dir(), new_name)
+		var err = dir_access.rename(file_path, new_full_path)
+		if err != OK:
+			push_error("Failed to rename file: " + file_path + " to " + new_full_path)
+		else:
+			print("Renamed: " + file_path + " -> " + new_full_path)
+	
 	return new_name
 	
+# Clean directory file names by renaming all files using cleanName()
+func cleanDirFileNames(directory_path: String, recursive: bool = false) -> void:
+	var files_array = openDir(directory_path, recursive)
+	for file_path in files_array:
+		cleanName(file_path)
+
 # Open a directory and return its file paths - optionally recursively search
 func openDir(directory_path: String, recursive: bool = false) -> Array:
 	var files_array: Array = []
