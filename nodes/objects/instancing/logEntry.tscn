@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://dr3frmvilmtel"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_786o2"]
+viewport_path = NodePath("SubViewport")
+
+[node name="Sprite3D" type="Sprite3D"]
+texture = SubResource("ViewportTexture_786o2")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="SubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
