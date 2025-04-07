@@ -9,7 +9,7 @@ func exists(file_path: String) -> bool:
 # Open a file and return it at file_path
 func open(file_path: String) -> String:
 	var file = false
-	if file.exists(file_path):
+	if exists(file_path):
 		var err = file.open(file_path, FileAccess.READ)
 		if err == OK:
 			var content = file.get_as_text()
