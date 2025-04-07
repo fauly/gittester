@@ -32,7 +32,7 @@ func joinPath(dir: String, file: String) -> String:
 # Clean up a filename to camelcase
 func cleanName(file_path: String) -> String:
 	# Check if the file exists; if not, log an error and return an empty string.
-	if not FileAccess.file_exists(file_path):
+	if not exists(file_path):
 		push_error("File does not exist: " + file_path)
 		return ""
 	
