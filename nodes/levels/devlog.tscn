@@ -17,6 +17,7 @@ size = Vector3(50, 1, 50)
 transform = Transform3D(1, 0, 0, 0, -0.46793, 0.883766, 0, -0.883766, -0.46793, 0, 1.99998, 0)
 
 [node name="logGenerator" parent="." instance=ExtResource("2_j7ynd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.15141, 0)
 entry_offset = 5.0
 aisle_spacing = 4.0
 inward_angle_deg = 20.0

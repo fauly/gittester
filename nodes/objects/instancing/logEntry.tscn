@@ -9,9 +9,10 @@ viewport_path = NodePath("SubViewport")
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
 texture = SubResource("ViewportTexture_786o2")
 script = ExtResource("1_2cui2")
-file_path = "res://!devlog!/anEntry_20250408_091120.json"
+file_path = "res://!devlog!/godotGotMeCreamin_20250408_173708.json"
 
 [node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(800, 700)
 
 [node name="ColorRect" type="ColorRect" parent="SubViewport"]
 anchors_preset = 15
@@ -21,14 +22,27 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.529412, 0.529412, 0.529412, 0.392157)
 
-[node name="Title" type="RichTextLabel" parent="SubViewport"]
-custom_minimum_size = Vector2(300, 10)
+[node name="Control" type="Control" parent="SubViewport"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 390.0
+offset_bottom = 50.0
+
+[node name="Title" type="RichTextLabel" parent="SubViewport/Control"]
+clip_contents = false
 layout_direction = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 offset_left = 10.0
-offset_right = 110.0
-offset_bottom = 34.0
+offset_right = 181.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.695187, 1)
 bbcode_enabled = true
 fit_content = true
+autowrap_mode = 0
 
 [node name="Date" type="RichTextLabel" parent="SubViewport"]
 clip_contents = false
@@ -52,12 +66,24 @@ offset_bottom = 80.0
 bbcode_enabled = true
 
 [node name="Content" type="RichTextLabel" parent="SubViewport"]
-anchors_preset = 15
+anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_top = 80.0
-offset_bottom = 80.0
+offset_bottom = 150.0
 grow_horizontal = 2
 grow_vertical = 2
 bbcode_enabled = true
 horizontal_alignment = 1
+
+[node name="Images" type="Control" parent="SubViewport"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 3
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -225.0
+offset_bottom = -75.0
+grow_horizontal = 2
+grow_vertical = 0

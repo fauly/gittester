@@ -1,0 +1,18 @@
+{
+	"title": "[color=purple]Godot got me [shake rate=20.0 level=5 connected=1]vibin[/shake] soooo good[/color]",
+	"author": "fauly",
+	"date": "2025-04-08 17:37:08",
+	"content": [
+	"[color=black]This is a devlog entry.",
+	"If you take a look at the file in the !devlog! folder,\nthere is a file with the same title",
+	"",
+	"In that file you'll see a bit of a template json file.",
+	"",
+	"Are there bugs?",
+	"This a whole damn jungle...",
+	"Maybe it will get cleaned up by someone smart"
+	],
+	"images" : [
+		"res://content/textures/einstein.tres"
+	]
+}

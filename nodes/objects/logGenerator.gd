@@ -30,7 +30,7 @@ const LogEntry = preload("res://nodes/objects/instancing/logEntry.gd")
 
 func generate_devlog():
 	if not logs_root:
-		push_warning("logs_root is null, skipping cleanup.")
+		#push_warning("logs_root is null, skipping cleanup.")
 		return
 	
 	# Clean up existing log entries

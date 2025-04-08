@@ -81,7 +81,7 @@ func cleanName(file_path: String) -> String:
 		var suffix_date = parts_base[1]
 		var suffix_time = parts_base[2]
 		if suffix_date == date_str and suffix_time == time_str:
-			print("✅ Already correct:", file_name)
+			#print("✅ Already correct:", file_name)
 			return file_name
 
 	# In both cases above, fallback to first part and rebuild

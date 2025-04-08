@@ -1,0 +1,41 @@
+[gd_resource type="AnimatedTexture" load_steps=13 format=3 uid="uid://oi72tx32huhc"]
+
+[ext_resource type="Texture2D" uid="uid://djrqfeyp3fddd" path="res://content/frames/einstein/einstein (1).jpg" id="1_17y5a"]
+[ext_resource type="Texture2D" uid="uid://cy7s5botiirpi" path="res://content/frames/einstein/einstein (2).jpg" id="2_x1k7w"]
+[ext_resource type="Texture2D" uid="uid://dcwi2jwu08pk6" path="res://content/frames/einstein/einstein (11).jpg" id="3_clxy6"]
+[ext_resource type="Texture2D" uid="uid://ul768klune3o" path="res://content/frames/einstein/einstein (12).jpg" id="4_tk4tq"]
+[ext_resource type="Texture2D" uid="uid://cbqk1s8tu1wtp" path="res://content/frames/einstein/einstein (3).jpg" id="5_a4pgt"]
+[ext_resource type="Texture2D" uid="uid://fnjfplvjl032" path="res://content/frames/einstein/einstein (4).jpg" id="6_5gr15"]
+[ext_resource type="Texture2D" uid="uid://s7xtrarabc0u" path="res://content/frames/einstein/einstein (5).jpg" id="7_q4xal"]
+[ext_resource type="Texture2D" uid="uid://c6orwy5l6bf04" path="res://content/frames/einstein/einstein (6).jpg" id="8_jnywe"]
+[ext_resource type="Texture2D" uid="uid://c464i4wqi2ekx" path="res://content/frames/einstein/einstein (7).jpg" id="9_i0agi"]
+[ext_resource type="Texture2D" uid="uid://de428dij6ftkq" path="res://content/frames/einstein/einstein (8).jpg" id="10_d42da"]
+[ext_resource type="Texture2D" uid="uid://c7pcc6suyyls2" path="res://content/frames/einstein/einstein (9).jpg" id="11_6wm5h"]
+[ext_resource type="Texture2D" uid="uid://dlyxf2fy1o5bv" path="res://content/frames/einstein/einstein (10).jpg" id="12_qns1j"]
+
+[resource]
+frames = 12
+speed_scale = 8.0
+frame_0/texture = ExtResource("1_17y5a")
+frame_1/texture = ExtResource("2_x1k7w")
+frame_1/duration = 1.0
+frame_2/texture = ExtResource("5_a4pgt")
+frame_2/duration = 1.0
+frame_3/texture = ExtResource("6_5gr15")
+frame_3/duration = 1.0
+frame_4/texture = ExtResource("7_q4xal")
+frame_4/duration = 1.0
+frame_5/texture = ExtResource("8_jnywe")
+frame_5/duration = 1.0
+frame_6/texture = ExtResource("9_i0agi")
+frame_6/duration = 1.0
+frame_7/texture = ExtResource("10_d42da")
+frame_7/duration = 1.0
+frame_8/texture = ExtResource("11_6wm5h")
+frame_8/duration = 1.0
+frame_9/texture = ExtResource("12_qns1j")
+frame_9/duration = 1.0
+frame_10/texture = ExtResource("3_clxy6")
+frame_10/duration = 1.0
+frame_11/texture = ExtResource("4_tk4tq")
+frame_11/duration = 1.0
