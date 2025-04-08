@@ -47,7 +47,7 @@ func _ready():
 	# Capture mouse for camera control
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
-func _process(delta):
+func _process(_delta):
 	# Skip if spring arm is not available
 	if not spring_arm:
 		return
