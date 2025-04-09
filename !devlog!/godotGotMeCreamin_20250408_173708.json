@@ -10,7 +10,8 @@
 	"",
 	"Are there bugs?",
 	"This a whole damn jungle...",
-	"Maybe it will get cleaned up by someone smart"
+	"Maybe it will get cleaned up by someone smart",
+	"[img]{res://content/imgs/cat.jpg}[/img]"
 	],
 	"images" : [
 		"res://content/textures/einstein.tres"

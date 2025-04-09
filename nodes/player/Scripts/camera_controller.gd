@@ -71,7 +71,7 @@ func _input(event):
 	# Handle mouse motion for camera rotation
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		# Process X (horizontal) rotation
-		var x_factor = -1.0 if invert_x else 1.0
+		var x_factor = 1.0 if invert_x else -1.0
 		rotation_y += event.relative.x * mouse_sensitivity * 0.01 * x_factor
 		
 		# Process Y (vertical) rotation
