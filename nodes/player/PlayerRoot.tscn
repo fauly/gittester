@@ -17,6 +17,13 @@ camera_settings = ExtResource("3_p7r7a")
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="."]
 script = ExtResource("2_qkdm7")
+jump_add_force = 7.0
+air_control = 2.5
+camera_distance = 7.105
+dash_speed = 10.085
+dash_duration = 0.01
+dash_jump_boost = 2.365
+dash_cooldown = -0.255
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
 shape = SubResource("CapsuleShape3D_t4ysy")

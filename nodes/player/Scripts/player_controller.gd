@@ -29,6 +29,17 @@ extends CharacterBody3D
 var target_speed: float = 0.0
 var current_speed: float = 0.0
 
+# Dash Function (In front of player and to the sides, pressing space during dash allows for a momentum boost)
+@export var dash_speed: float = 20.0
+@export var dash_duration: float = 0.2
+@export var dash_jump_boost: float = 8.0
+@export var dash_cooldown: float = 0.5
+var is_dashing: bool = false
+var dash_timer: float = 0.0
+var dash_direction: Vector3 = Vector3.ZERO
+var dash_cooldown_timer: float = 0.0
+var dash_impulse: Vector3 = Vector3.ZERO
+
 # The camera is now a sibling node, not a child
 var camera_pivot: Node3D
 
@@ -169,14 +180,58 @@ func _physics_process(delta):
 	else:
 		target_speed = move_speed
 		current_speed = lerp(current_speed, target_speed, run_deceleration * delta)
-	
+	dash(delta)
+	velocity += dash_impulse
 	move_and_slide()
 
 func perform_jump():
 	is_jumping = true
 	jump_hold_timer = 0.0
 	velocity.y = jump_strength
+
+func dash(delta):
+	if dash_cooldown_timer > 0:
+		dash_cooldown_timer -= delta
 	
+	# Start dash
+	if not is_dashing and dash_cooldown_timer <= 0:
+		if Input.is_action_just_pressed("move_dash"):
+			var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+			if input_dir != Vector2.ZERO:
+				var dash_input_dir = get_movement_direction(input_dir)
+				
+				# Prevent backward dash
+				var forward_dir = -camera_pivot.global_transform.basis.z
+				forward_dir.y = 0
+				forward_dir = forward_dir.normalized()
+				
+				if dash_input_dir.dot(forward_dir) > 0:
+					is_dashing = true
+					dash_timer = dash_duration
+					dash_direction = dash_input_dir
+					dash_cooldown_timer = dash_cooldown
+					
+					# Apply initial dash impulse
+					dash_impulse += dash_direction * dash_speed
+	
+	# If dashing, count down dash timer
+	if is_dashing:
+		dash_timer -= delta
+		
+		# If player jumps during dash, give extra boost
+		if Input.is_action_just_pressed("jump"):
+			velocity += dash_direction * dash_speed * 0.3 # you can tune 0.7!
+		
+		# End dash when timer runs out
+		if dash_timer <= 0:
+			is_dashing = false
+	
+	# Gradual dash impulse decay (natural slowdown)
+	if dash_impulse.length() > 0.1:
+		dash_impulse = dash_impulse.move_toward(Vector3.ZERO, dash_speed * 2 * delta)
+	else:
+		dash_impulse = Vector3.ZERO
+
 # Get movement direction based on camera orientation
 func get_movement_direction(input_dir: Vector2) -> Vector3:
 	# Default movement direction based on character's orientation
