@@ -1,0 +1,90 @@
+[gd_scene load_steps=2 format=3 uid="uid://24helhktjt1h"]
+
+[ext_resource type="Script" uid="uid://ce2mgxdee8mog" path="res://addons/devlogger/devlog_browser_ui.gd" id="1_3dhov"]
+
+[node name="DevlogBrowser" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+script = ExtResource("1_3dhov")
+
+[node name="TopBar" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="NewEntryButton" type="Button" parent="TopBar"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "➕ New Entry"
+
+[node name="DeleteButton" type="Button" parent="TopBar"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "🗑 Delete"
+
+[node name="EntryTree" type="Tree" parent="."]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ContentPreview" type="TextEdit" parent="."]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 2
+size_flags_vertical = 3
+editable = false
+
+[node name="SaveDialog" type="FileDialog" parent="."]
+mode = 1
+
+[node name="EntryPopup" type="PopupPanel" parent="."]
+initial_position = 1
+size = Vector2i(1600, 600)
+unresizable = false
+borderless = false
+
+[node name="PopupHBox" type="HBoxContainer" parent="EntryPopup"]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 1596.0
+offset_bottom = 596.0
+
+[node name="FormContainer" type="VBoxContainer" parent="EntryPopup/PopupHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TitleLabel" type="Label" parent="EntryPopup/PopupHBox/FormContainer"]
+layout_mode = 2
+text = "Title:"
+
+[node name="TitleLineEdit" type="LineEdit" parent="EntryPopup/PopupHBox/FormContainer"]
+layout_mode = 2
+placeholder_text = "Enter title here"
+
+[node name="AuthorLabel" type="Label" parent="EntryPopup/PopupHBox/FormContainer"]
+layout_mode = 2
+text = "Author:"
+
+[node name="AuthorLineEdit" type="LineEdit" parent="EntryPopup/PopupHBox/FormContainer"]
+layout_mode = 2
+placeholder_text = "Enter author here"
+
+[node name="ContentLabel" type="Label" parent="EntryPopup/PopupHBox/FormContainer"]
+layout_mode = 2
+text = "Content:"
+
+[node name="ContentTextEdit" type="TextEdit" parent="EntryPopup/PopupHBox/FormContainer"]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 2
+size_flags_vertical = 3
+placeholder_text = "Enter content here"
+
+[node name="SaveEntryButton" type="Button" parent="EntryPopup/PopupHBox/FormContainer"]
+layout_mode = 2
+text = "Save Entry"
+
+[node name="PreviewContainer" type="VBoxContainer" parent="EntryPopup/PopupHBox"]
+layout_mode = 2
+size_flags_horizontal = 3

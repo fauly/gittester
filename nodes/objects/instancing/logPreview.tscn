@@ -1,20 +1,22 @@
-[gd_scene load_steps=3 format=3 uid="uid://dr3frmvilmtel"]
+[gd_scene load_steps=3 format=3 uid="uid://exqbwoo8uc5p"]
 
-[ext_resource type="Script" uid="uid://7qy5g8dt2k4b" path="res://nodes/objects/instancing/logEntry.gd" id="1_2cui2"]
+[ext_resource type="Script" uid="uid://1pkorsov3s1r" path="res://nodes/objects/instancing/logPreview.gd" id="1_vr1ud"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_786o2"]
 viewport_path = NodePath("SubViewport")
 
-[node name="logEntry" type="Sprite3D"]
-transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
+[node name="logPreview" type="Sprite2D"]
 texture = SubResource("ViewportTexture_786o2")
-script = ExtResource("1_2cui2")
+centered = false
+region_rect = Rect2(266, 243, 192, 142)
+script = ExtResource("1_vr1ud")
 file_path = "res://!devlog!/godotGotMeCreamin_20250408_173708.json"
 
 [node name="SubViewport" type="SubViewport" parent="."]
 size = Vector2i(800, 700)
 
 [node name="ColorRect" type="ColorRect" parent="SubViewport"]
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

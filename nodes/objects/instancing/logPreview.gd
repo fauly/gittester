@@ -1,5 +1,5 @@
 @tool
-extends Node3D
+extends Node2D
 
 signal file_path_assigned(file_path)
 
