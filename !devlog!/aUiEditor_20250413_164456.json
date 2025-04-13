@@ -1,0 +1,11 @@
+{
+	"author": "fauly",
+	"content": [
+		"Hopefully, this is a ui editor that works. \nIt seems to! Which is [i]exciting[/i]\n[font_size=16]especially if I can preview bbcode as i'm currently doing.[/font_size]\ni'm sure that there will end up being some bugs but at least for now what i've added:\n[ol] ability to browse existing files with a quick preview, which now I realise I should update to the logPreview scene not just text\n The ability to edit files and view whilst typing\n Saving files! [/ol]"
+	],
+	"date": "2025-04-13 16:44:56",
+	"images": [
+		""
+	],
+	"title": "A ui editor"
+}

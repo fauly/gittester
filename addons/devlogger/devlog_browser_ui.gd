@@ -44,20 +44,33 @@ func _on_file_selected(path: String):
 	entry_popup.popup_centered_ratio(0.8)
 
 func _on_save_entry_pressed():
+	var title = title_line_edit.text
+	var author = author_line_edit.text
+	var date = _get_current_datetime()
+	var content = [ content_text_edit.text ]
+
 	var data = {
-		"title": title_line_edit.text,
-		"author": author_line_edit.text,
-		"date": _get_current_datetime(),
-		"content": [ content_text_edit.text ],
+		"title": title,
+		"author": author,
+		"date": date,
+		"content": content,
 		"images": [ "" ]
 	}
+
+	var file_name_base = ut.camelCase(title.strip_edges().to_lower())
+	var timestamp = date.replace("-", "").replace(":", "").replace(" ", "_")
+	var file_name = file_name_base + "_" + timestamp + ".json"
+	new_entry_path = "res://!devlog!/" + file_name
+
 	var json_str = JSON.stringify(data, "\t")
+
 	var f = FileAccess.open(new_entry_path, FileAccess.WRITE)
 	if f:
 		f.store_string(json_str)
 		f.close()
 	else:
 		push_error("Failed to open file for writing at: " + new_entry_path)
+
 	entry_popup.hide()
 	refresh_tree()
 	EditorInterface.get_resource_filesystem().scan()
@@ -116,6 +129,7 @@ func _on_delete_pressed():
 			else:
 				print(file_path, " deleted.")
 				refresh_tree()
+				EditorInterface.get_resource_filesystem().scan()
 
 func refresh_tree():
 	entry_tree.clear()

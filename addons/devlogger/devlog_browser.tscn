@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://ce2mgxdee8mog" path="res://addons/devlogger/devlog_browser_ui.gd" id="1_3dhov"]
 
-[node name="DevlogBrowser" type="VBoxContainer"]
+[node name="Devlogger" type="VBoxContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
