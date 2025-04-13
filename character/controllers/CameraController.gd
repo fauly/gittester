@@ -36,7 +36,7 @@ func _get_target_transform(character: Node, delta: float) -> Transform3D:
 	sorted.sort_custom(func(a, b): return a.priority > b.priority)
 
 	for m in sorted:
-		transform = m.apply(character, self, transform, delta)
+		transform = m.apply(character, camera, transform, delta)
 
 	return transform
 
