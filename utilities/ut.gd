@@ -23,6 +23,7 @@ func appendDir(directory_path: String, target_array: Array, match_regex: String 
 		if not dir.current_is_dir():
 			var full_path = directory_path + "/" + file_name
 			if match_regex == "" or file_name.matchn(match_regex):
+				print(full_path)
 				target_array.append(full_path)
 		file_name = dir.get_next()
 
