@@ -1,0 +1,23 @@
+extends Node
+
+@export var intensity: float = 0.5
+@export var frequency: float = 40.0
+
+func apply(current: Transform3D, target: Transform3D, camera: Camera3D, delta: float) -> Transform3D:
+	var time := Time.get_ticks_msec() / 1000.0
+	var t := 0.5 + sin(time * frequency) * 0.5 * intensity
+
+	var jitter := Vector3(
+		sin(time * 13.2) * 0.1,
+		sin(time * 17.4) * 0.1,
+		cos(time * 19.6) * 0.1
+	)
+
+	var blend := current
+	blend.origin = current.origin.lerp(target.origin + jitter, t)
+	blend.basis = current.basis.slerp(target.basis.rotated(Vector3.UP, jitter.x * 0.1), t)
+
+	if camera and camera.has_method("set_shader_overlay_enabled"):
+		camera.set_shader_overlay_enabled(true)
+
+	return blend

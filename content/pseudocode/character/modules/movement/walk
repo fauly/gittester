@@ -1,0 +1,15 @@
+extends Node
+
+export var walk_speed: float = 5.0
+var input_axis: float = 0.0
+
+func handle_input(action: String, value: Variant) -> void:
+	match action:
+		"move_forward":
+			input_axis = value ? 1.0 : (Input.is_action_pressed("move_back") ? -1.0 : 0.0)
+		"move_back":
+			input_axis = value ? -1.0 : (Input.is_action_pressed("move_forward") ? 1.0 : 0.0)
+
+func apply(character: Node, velocity: Vector3, delta: float) -> Vector3:
+	velocity.z = -input_axis * walk_speed
+	return velocity

@@ -1,0 +1,10 @@
+extends Node
+
+@export var blend_speed: float = 5.0
+
+func apply(current: Transform3D, target: Transform3D, camera: Camera3D, delta: float) -> Transform3D:
+	var t := clamp(blend_speed * delta, 0, 1)
+	var blended := current
+	blended.origin = current.origin.lerp(target.origin, t)
+	blended.basis = current.basis.slerp(target.basis, t)
+	return blended

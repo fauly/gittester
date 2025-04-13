@@ -1,0 +1,11 @@
+extends Node
+class_name Transitioner
+
+@export var transition_module: Node
+
+@export var transition_modules_dir: String = "res://Character/Modules/Transition"
+
+func apply(from: Transform3D, to: Transform3D, camera: Camera3D, delta: float) -> Transform3D:
+	if transition_module and transition_module.has_method("apply"):
+		return transition_module.apply(from, to, camera, delta)
+	return to

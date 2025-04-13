@@ -1,0 +1,28 @@
+extends Node
+
+@export var overlay_layer: CanvasLayer
+var shader_rect: ColorRect
+var material: ShaderMaterial
+
+@export var shader_modules_dir: String = "res://Character/Modules/Shaders"
+
+func _ready():
+	shader_rect = ColorRect.new()
+	shader_rect.color = Color(1, 1, 1, 1)
+	shader_rect.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	shader_rect.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	shader_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	shader_rect.z_index = 1000
+	overlay_layer.add_child(shader_rect)
+
+func set_shader(shader: Shader):
+	material = ShaderMaterial.new()
+	material.shader = shader
+	shader_rect.material = material
+
+func set_param(name: String, value):
+	if material:
+		material.set_shader_parameter(name, value)
+
+func update_shader(delta: float, character: Node, camera: Camera3D):
+	pass

@@ -1,0 +1,43 @@
+extends Node
+class_name MovementController
+
+class MovementModule:
+	extends Resource
+	@export var name: String
+	@export var module: Node
+	@export var enabled: bool = true
+
+	func apply(character: Node, velocity: Vector3, delta: float) -> Vector3:
+		if not enabled or not module:
+			return velocity
+		if module.has_method("apply"):
+			return module.call("apply", character, velocity, delta)
+		return velocity
+
+@export_category("Movement Modules")
+@export var modules: Array[MovementModule] = []
+
+@export var modules_dir: String = "res://Character/Modules/Movement"
+@export var velocity: Vector3 = Vector3.ZERO
+
+func _ready():
+	for m in modules:
+		if m.module and m.module is Node:
+			add_child(m.module)
+
+func _physics_process(delta: float):
+	var character = get_parent()
+	for m in modules:
+		velocity = m.apply(character, velocity, delta)
+	character.move_and_slide(velocity)
+
+func load_modules_from_dir():
+	var paths := []
+	ut.appendDir(modules_dir, paths)
+	for path in paths:
+		var instance = load(path).new()
+		var mod = MovementModule.new()
+		mod.name = path.get_file().get_basename()
+		mod.module = instance
+		modules.append(mod)
+		add_child(instance)

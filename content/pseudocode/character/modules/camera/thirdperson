@@ -1,0 +1,31 @@
+extends Node
+
+@export var follow_offset: Vector3 = Vector3(0, 2.5, -6)
+@export var look_at_offset: Vector3 = Vector3(0, 1.5, 0)
+@export var smooth_speed: float = 6.0
+@export var rotation_speed: float = 1.0
+
+var yaw := 0.0
+var pitch := 0.0
+var look_input := Vector2.ZERO
+
+func handle_input(action: String, value: Variant) -> void:
+	if action == "look" and value is Vector2:
+		look_input = value
+
+func apply(character: Node, camera: Camera3D, transform: Transform3D, delta: float) -> Transform3D:
+	yaw -= look_input.x * rotation_speed * delta
+	pitch -= look_input.y * rotation_speed * delta
+	pitch = clamp(pitch, -60, 60)
+
+	var target_position = character.global_transform.origin + Vector3(0, 0, 0)
+	var offset := follow_offset.rotated(Vector3.UP, yaw)
+	var desired_position = target_position + offset
+
+	var position = transform.origin.lerp(desired_position, clamp(smooth_speed * delta, 0, 1))
+	var look_at_target = character.global_transform.origin + look_at_offset
+	var new_basis = Basis().looking_at(look_at_target - position, Vector3.UP)
+
+	new_basis = new_basis.rotated(new_basis.x, deg2rad(pitch))
+
+	return Transform3D(new_basis, position)

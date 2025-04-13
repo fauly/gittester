@@ -1,0 +1,19 @@
+shader_type canvas_item;
+
+uniform float time_warp = 0.1;
+uniform float smear_strength = 0.5;
+uniform float rgb_offset = 0.005;
+
+void fragment() {
+	vec2 uv = UV;
+
+	vec2 smear_uv = uv;
+	smear_uv.x += sin(uv.y * 20.0 + TIME * 5.0) * smear_strength;
+	smear_uv.y += cos(uv.x * 40.0 + TIME * 6.0) * smear_strength * 0.5;
+
+	vec4 r = texture(SCREEN_TEXTURE, smear_uv + vec2(rgb_offset, 0.0));
+	vec4 g = texture(SCREEN_TEXTURE, smear_uv);
+	vec4 b = texture(SCREEN_TEXTURE, smear_uv - vec2(rgb_offset, 0.0));
+
+	COLOR = vec4(r.r, g.g, b.b, 1.0);
+}

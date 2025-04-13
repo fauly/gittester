@@ -1,0 +1,38 @@
+# General idea for this controller is that it receives Godot input
+# and then we route it to a node which has its own decoupled handle_input method 
+# that method is receiving arguments as required
+
+extends Node
+class_name InputController
+
+class InputTarget:
+	extends Resource
+	@export var actions: Array[String]
+	@export var target_node: NodePath
+	@export var method_name: String = "handle_input"
+	@export var enabled: bool = true
+	@export var extra_args: Array = []
+
+@export var mappings: Array[InputTarget] = []
+
+func _input(event):
+	for m in mappings:
+		if not m.enabled:
+			continue
+		for action in m.actions:
+			if Input.is_action_just_pressed(action):
+				_route_input(m, action, true)
+			elif Input.is_action_just_released(action):
+				_route_input(m, action, false)
+
+func _route_input(map: InputTarget, action: String, value):
+	var node = get_node_or_null(map.target_node)
+	if not node:
+		push_error("InputController: target node not found: " + str(map.target_node))
+		return
+	if not node.has_method(map.method_name):
+		push_error("InputController: method not found on target node: " + map.method_name)
+		return
+	var args = [action, value]
+	args.append_array(map.extra_args)
+	node.callv(map.method_name, args)

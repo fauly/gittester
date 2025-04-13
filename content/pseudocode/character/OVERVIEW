@@ -1,0 +1,28 @@
+Looking at character scene abstractly:
+
+- Character
+
+-- AnimationController
+--- Input Matrix mapped to an output animation mesh table - Outputting the current model/animation
+
+-- MovementController (Has openly accessible variables for state etc., works in a pipeline applying any modules in order)
+--- Modules (imported from a directory as files, can be enabled or disabled in inspector - or have their own properties exposed and adjustable in the inspector automatically):
+---  Dash
+---  Jump
+---  Gravity
+
+-- CameraController  (Has openly accessible variables for state etc, works in a pipeline applying any modules in order of their priority)
+--- Modules (also imported, have states, can have priority to override other camera modes)
+--- First Person
+--- Third Person / Follow object
+--- Focus (on particular object) and can place it on screen space in a particular place, or have a bias to how much it can rotate - only rotation based
+--- Locked rotation - only rotation based
+--- Locked in space - only position based
+--- Cutscene (Full animation rotation and position based with keyframes)
+--- Effect (can be any other file that applies something not rotation or position based, will take input from wherever we are in the pipeline visually)
+---Transitioner that manages the shifting between modes.
+---- Modules for the transitioner describe how we get from one state to the next.
+--- Shaderer to manage shaders as modules
+
+-- InputController
+--- This takes godots inputs and just maps them to an output signal for use elsewhere.
