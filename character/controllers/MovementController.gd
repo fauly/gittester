@@ -4,11 +4,14 @@ class_name MovementController
 
 @export var modules_dir: String = "res://Character/Modules/Movement"
 @export var velocity: Vector3 = Vector3.ZERO
+@export var InputController : Node
 
 var modules: Array[MovementModule] = []
 
 func _ready():
 	_load_modules_from_dir()
+	if InputController.has_method("register_target"):
+		InputController.register_target(self)
 
 func _physics_process(delta: float):
 	for m in modules:
@@ -16,7 +19,6 @@ func _physics_process(delta: float):
 			velocity = m.apply(velocity, delta)
 
 	# You might call `move_and_slide(velocity)` from parent script
-
 func handle_input(action: String, value: Variant):
 	for m in modules:
 		if m.enabled and m.has_method("handle_input"):

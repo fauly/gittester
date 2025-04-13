@@ -3,6 +3,7 @@ extends Node3D
 class_name CameraController
 
 @export var use_global_transform: bool = true
+@export var InputController : Node
 @export var camera : Camera3D
 @export var transitioner: Node
 @export var shaderer: Node
@@ -20,6 +21,8 @@ func _ready():
 	last_transform = global_transform
 	if not Engine.is_editor_hint():
 		_load_modules_from_dir()
+		if InputController.has_method("register_target"):
+			InputController.register_target(self)
 
 func _process(delta: float):
 	var character = get_parent()
