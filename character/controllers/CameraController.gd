@@ -20,12 +20,6 @@ func _ready():
 	if not Engine.is_editor_hint():
 		_load_modules_from_dir()
 
-	if transitioner and transitioner is Node:
-		add_child(transitioner)
-
-	if shaderer and shaderer is Node:
-		add_child(shaderer)
-
 func _process(delta: float):
 	var character = get_parent()
 	var transform = _get_target_transform(character, delta)
