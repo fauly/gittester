@@ -71,7 +71,7 @@ func _load_modules_from_dir():
 	modules.clear()
 
 	var paths: Array = []
-	ut.appendDir(modules_dir, paths, "^.*\\.gd$")
+	ut.appendDir(modules_dir, paths, "*.gd")
 
 	for path in paths:
 		var script = load(path)
