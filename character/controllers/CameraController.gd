@@ -3,6 +3,7 @@ extends Node3D
 class_name CameraController
 
 @export var use_global_transform: bool = true
+@export var camera : Camera3D
 @export var transitioner: Node
 @export var shaderer: Node
 @export var modules_dir: String = "res://character/modules/camera"
