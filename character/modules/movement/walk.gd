@@ -1,4 +1,5 @@
 extends MovementModule
+class_name Walk
 
 @export var walk_speed: float = 5.0
 var input_axis := Vector3.ZERO

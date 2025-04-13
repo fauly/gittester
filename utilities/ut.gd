@@ -28,3 +28,23 @@ func appendDir(directory_path: String, target_array: Array, match_regex: String 
 		file_name = dir.get_next()
 
 	dir.list_dir_end()
+
+
+func get_exported_properties_recursive(node: Node) -> Dictionary:
+	var result := {}
+	for child in node.get_children():
+		if not child is Node:
+			continue
+
+		var child_data := {}
+		var property_list := child.get_property_list()
+
+		for prop in property_list:
+			if prop.has("usage") and (prop.usage & PROPERTY_USAGE_EDITOR) and not (prop.usage & PROPERTY_USAGE_CATEGORY):
+				var name = prop.name
+				child_data[name] = child.get(name)
+
+		if child_data.size() > 0:
+			result[child.name] = child_data
+
+	return result

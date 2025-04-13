@@ -10,7 +10,7 @@ var modules: Array[MovementModule] = []
 
 func _ready():
 	_load_modules_from_dir()
-	if InputController.has_method("register_target"):
+	if InputController and InputController.has_method("register_target"):
 		InputController.register_target(self)
 
 func _physics_process(delta: float):

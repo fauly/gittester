@@ -13,5 +13,5 @@ func apply(character: Node, camera: Camera3D, transform: Transform3D, delta: flo
 	basis = basis.rotated(Vector3.UP, yaw)
 	basis = basis.rotated(Vector3.RIGHT, pitch)
 
-	var origin = character.global_transform.origin + head_ground_offset
+	var origin: Vector3 = character.global_transform.origin + head_ground_offset
 	return Transform3D(basis, origin)

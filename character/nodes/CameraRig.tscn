@@ -4,19 +4,16 @@
 [ext_resource type="Script" uid="uid://pnnvdm1fxx7b" path="res://character/modules/shaderer.gd" id="2_oon8g"]
 [ext_resource type="Script" uid="uid://t6o14auhgiul" path="res://character/modules/transitioner.gd" id="3_pkifb"]
 
-[node name="CameraRig" type="Node3D"]
-
-[node name="CameraController" type="Node3D" parent="." node_paths=PackedStringArray("camera", "transitioner", "shaderer")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+[node name="CameraRig" type="Node3D" node_paths=PackedStringArray("camera", "transitioner", "shaderer")]
 script = ExtResource("1_5cc56")
-camera = NodePath("../Camera3D")
+camera = NodePath("Camera3D")
 transitioner = NodePath("Transitioner")
 shaderer = NodePath("Shaderer")
 
-[node name="Transitioner" type="Node" parent="CameraController"]
+[node name="Camera3D" type="Camera3D" parent="."]
+
+[node name="Transitioner" type="Node" parent="."]
 script = ExtResource("3_pkifb")
 
-[node name="Shaderer" type="Node" parent="CameraController"]
+[node name="Shaderer" type="Node" parent="."]
 script = ExtResource("2_oon8g")
-
-[node name="Camera3D" type="Camera3D" parent="."]

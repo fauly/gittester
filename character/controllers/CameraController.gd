@@ -64,8 +64,6 @@ func handle_input(action: String, value: Variant):
 			m.handle_input(action, value)
 
 func _load_modules_from_dir():
-	# Prevent duplicates
-	print('searching')
 	for child in get_children():
 		if child is CameraModule:
 			remove_child(child)
@@ -83,4 +81,3 @@ func _load_modules_from_dir():
 			if node is CameraModule:
 				add_child(node)
 				modules.append(node)
-	print("Found files: ", paths)
