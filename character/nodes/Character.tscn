@@ -1,5 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://bjwd2buosatag"]
+[gd_scene load_steps=7 format=3 uid="uid://bjwd2buosatag"]
 
+[ext_resource type="Script" uid="uid://c3n6dpjvj048q" path="res://character/controllers/CharacterController.gd" id="1_dblrp"]
 [ext_resource type="Script" uid="uid://cjht6nitw1f7u" path="res://character/controllers/InputController.gd" id="1_eeo2e"]
 [ext_resource type="PackedScene" uid="uid://nc0rspdg5la4" path="res://character/nodes/MovementController.tscn" id="2_aci1n"]
 [ext_resource type="PackedScene" uid="uid://dibqlvxnsmwwf" path="res://character/nodes/CameraRig.tscn" id="2_vartx"]
@@ -9,6 +10,7 @@
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_dblrp"]
 
 [node name="Character" type="Node3D"]
+script = ExtResource("1_dblrp")
 
 [node name="InputController" type="Node" parent="."]
 script = ExtResource("1_eeo2e")

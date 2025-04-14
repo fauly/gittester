@@ -6,7 +6,7 @@ class_name MovementController
 @export var velocity: Vector3 = Vector3.ZERO
 @export var InputController : Node
 
-var modules: Array[MovementModule] = []
+@export var modules: Array[Node] = []
 
 func _ready():
 	_load_modules_from_dir()
