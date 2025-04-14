@@ -5,6 +5,6 @@ extends Node3D
 
 func _physics_process(delta: float):
 	movement._physics_process(delta)
-
+	body.rotation = movement.rotation
 	body.velocity = movement.velocity
 	body.move_and_slide()

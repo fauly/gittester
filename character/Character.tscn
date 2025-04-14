@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://bjwd2buosatag"]
+[gd_scene load_steps=9 format=3 uid="uid://bjwd2buosatag"]
 
 [ext_resource type="Script" uid="uid://c3n6dpjvj048q" path="res://character/controllers/CharacterController.gd" id="1_mfnnf"]
 [ext_resource type="Script" uid="uid://cjht6nitw1f7u" path="res://character/controllers/InputController.gd" id="2_ejbmd"]
@@ -9,14 +9,22 @@
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_dblrp"]
 
+[sub_resource type="SphereMesh" id="SphereMesh_mfnnf"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mfnnf"]
+albedo_color = Color(0.152939, 0.160571, 0.363826, 1)
+
 [node name="Character" type="Node3D"]
 script = ExtResource("1_mfnnf")
 
 [node name="InputController" type="Node" parent="."]
 script = ExtResource("2_ejbmd")
 
-[node name="MovementController" parent="." node_paths=PackedStringArray("MyInputController") instance=ExtResource("3_dgm77")]
+[node name="MovementController" parent="." node_paths=PackedStringArray("MyInputController", "myTarget") instance=ExtResource("3_dgm77")]
 MyInputController = NodePath("../InputController")
+myTarget = NodePath("../CharacterBody3D")
 
 [node name="CameraRig" parent="." node_paths=PackedStringArray("MyInputController", "character") instance=ExtResource("4_3ec4b")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
@@ -31,3 +39,13 @@ shape = SubResource("CapsuleShape3D_aci1n")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D"]
 mesh = SubResource("CapsuleMesh_dblrp")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D/MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.132188, 0.711389, -0.465024)
+mesh = SubResource("SphereMesh_mfnnf")
+surface_material_override/0 = SubResource("StandardMaterial3D_mfnnf")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="CharacterBody3D/MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.132, 0.711, -0.465)
+mesh = SubResource("SphereMesh_mfnnf")
+surface_material_override/0 = SubResource("StandardMaterial3D_mfnnf")

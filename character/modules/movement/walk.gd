@@ -1,6 +1,7 @@
 extends "res://character/modules/movement/MovementModule.gd"
 
 @export var properties := {
+	"name": "Walk",
 	"enabled": true,
 	"walk_speed": 5.0
 }
@@ -26,10 +27,13 @@ func _update_input_axis():
 		if pressed.get(action, false):
 			input_axis += MOVE_MAP[action]
 	input_axis = input_axis.normalized()
+	
+func apply(rotation: Vector3, velocity: Vector3, _delta: float) -> Dictionary:
+	var direction := input_axis
+	var rotated := Basis.from_euler(rotation) * direction
 
-func apply(velocity: Vector3, _delta: float) -> Vector3:
-	if not properties["enabled"]:
-		return velocity
-	velocity.x = input_axis.x * properties["walk_speed"]
-	velocity.z = input_axis.z * properties["walk_speed"]
-	return velocity
+	velocity.x = rotated.x * properties["walk_speed"]
+	velocity.z = rotated.z * properties["walk_speed"]
+	return {
+		"velocity": velocity
+	}

@@ -60,7 +60,6 @@ func _update_shader(delta: float, targetcharacter: Node):
 		shaderer.update_shader(delta, targetcharacter, self)
 
 func handle_input(action: String, value: Variant):
-	print("Received input ",action,value)
 	for m in modules:
 		if m.enabled:
 			m.handle_input(action, value)
