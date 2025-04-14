@@ -1,83 +1,69 @@
-@tool
 extends Node3D
 class_name CameraController
 
 @export var use_global_transform: bool = true
-@export var InputController : Node
+@export var MyInputController : Node
 @export var camera : Camera3D
 @export var transitioner: Node
 @export var shaderer: Node
 @export var modules_dir: String = "res://character/modules/camera"
+@export var character: CharacterBody3D
 
 var modules: Array[CameraModule] = []
 var last_transform: Transform3D
-
-@export_tool_button("Reload Modules","Reload") var reload_modules_btn = reload_modules
 
 func reload_modules():
 	_load_modules_from_dir()
 
 func _ready():
 	last_transform = global_transform
-	if not Engine.is_editor_hint():
-		_load_modules_from_dir()
-		if InputController.has_method("register_target"):
-			InputController.register_target(self)
+	_load_modules_from_dir()
+	if MyInputController.has_method("register_target"):
+		MyInputController.register_target(self)
 
 func _process(delta: float):
-	var character = get_parent()
-	var transform = _get_target_transform(character, delta)
-	var blended = _blend_transform(transform, delta)
+	var thistransform = _get_target_transform(character, delta)
+	var blended = _blend_transform(thistransform, delta)
 	_apply_transform(blended)
 	_update_shader(delta, character)
 	last_transform = blended
 
-func _get_target_transform(character: Node, delta: float) -> Transform3D:
-	var transform = last_transform
+func _get_target_transform(targetcharacter: Node, delta: float) -> Transform3D:
+	var thistransform := last_transform
 
-	var sorted = modules.filter(func(m): return m.enabled)
-	sorted.sort_custom(func(a, b): return a.priority > b.priority)
+	var active_module : Node = null
+	var top_priority := -999
+	
+	for m in modules:
+		if m.enabled and m.priority > top_priority:
+			active_module = m
+			top_priority = m.priority
 
-	for m in sorted:
-		transform = m.apply(character, camera, transform, delta)
+	if active_module:
+		thistransform = active_module.apply(targetcharacter, camera, transform, delta)
 
-	return transform
+	return thistransform
 
 func _blend_transform(target: Transform3D, delta: float) -> Transform3D:
 	if transitioner and transitioner.has_method("apply"):
 		return transitioner.apply(last_transform, target, self, delta)
 	return target
 
-func _apply_transform(transform: Transform3D):
+func _apply_transform(thistransform: Transform3D):
 	if use_global_transform:
-		global_transform = transform
+		global_transform = thistransform
 	else:
-		self.transform = transform
+		self.transform = thistransform
 
-func _update_shader(delta: float, character: Node):
+func _update_shader(delta: float, targetcharacter: Node):
 	if shaderer and shaderer.has_method("update_shader"):
-		shaderer.update_shader(delta, character, self)
+		shaderer.update_shader(delta, targetcharacter, self)
 
 func handle_input(action: String, value: Variant):
+	print("Received input ",action,value)
 	for m in modules:
 		if m.enabled:
 			m.handle_input(action, value)
 
 func _load_modules_from_dir():
-	for child in get_children():
-		if child is CameraModule:
-			remove_child(child)
-			child.queue_free()
-
-	modules.clear()
-
-	var paths: Array = []
-	ut.appendDir(modules_dir, paths, "*.gd")
-
-	for path in paths:
-		var script = load(path)
-		if script and script is GDScript:
-			var node: Node = script.new()
-			if node is CameraModule:
-				add_child(node)
-				modules.append(node)
+	ut.loadModulesFromDir(self, modules_dir, "res://character/modules/camera/CameraModule.gd", modules)

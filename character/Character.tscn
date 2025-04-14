@@ -1,0 +1,33 @@
+[gd_scene load_steps=7 format=3 uid="uid://bjwd2buosatag"]
+
+[ext_resource type="Script" uid="uid://c3n6dpjvj048q" path="res://character/controllers/CharacterController.gd" id="1_mfnnf"]
+[ext_resource type="Script" uid="uid://cjht6nitw1f7u" path="res://character/controllers/InputController.gd" id="2_ejbmd"]
+[ext_resource type="PackedScene" uid="uid://nc0rspdg5la4" path="res://character/nodes/MovementController.tscn" id="3_dgm77"]
+[ext_resource type="PackedScene" uid="uid://dibqlvxnsmwwf" path="res://character/nodes/CameraRig.tscn" id="4_3ec4b"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_aci1n"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_dblrp"]
+
+[node name="Character" type="Node3D"]
+script = ExtResource("1_mfnnf")
+
+[node name="InputController" type="Node" parent="."]
+script = ExtResource("2_ejbmd")
+
+[node name="MovementController" parent="." node_paths=PackedStringArray("MyInputController") instance=ExtResource("3_dgm77")]
+MyInputController = NodePath("../InputController")
+
+[node name="CameraRig" parent="." node_paths=PackedStringArray("MyInputController", "character") instance=ExtResource("4_3ec4b")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+MyInputController = NodePath("../InputController")
+character = NodePath("../CharacterBody3D")
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
+shape = SubResource("CapsuleShape3D_aci1n")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D"]
+mesh = SubResource("CapsuleMesh_dblrp")

@@ -1,4 +1,4 @@
-extends MovementModule
+extends "res://character/modules/movement/MovementModule.gd"
 
 @export var properties := {
 	"enabled": true,

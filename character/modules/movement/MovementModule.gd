@@ -1,6 +1,6 @@
 extends Node
-class_name MovementModule
 
+@export var moduleType: String = "movement"
 @export var enabled: bool = true
 @export var priority: int = 0
 
