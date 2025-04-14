@@ -1,0 +1,8 @@
+In general, the gamecode architecture takes on the following principles and shape:
+- That controllers manage a series of modules related to themselves - handling their own pipeline respectively.
+- Each module contains its own application, handling of input and any other conditions to enable/disable itself.
+- That any single node can have a controller of any kind applied to it.
+
+The idea to this decoupling is to make it clear what module is interacting, in which order, and to enable flexibility and readability in creating each part of the code.
+For example with the movement logic, instead of being compiled in one script and requiring less abstraction and more direct code.
+We have a controller that will automatically load all modules, exposing their properties, we only need to interact with the inspector to setup the order or the variables related to all movement logic. 
