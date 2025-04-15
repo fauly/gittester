@@ -1,7 +1,7 @@
 extends Node
 
 @export var enabled: bool = true
-
+@export var order: int = 0
 @onready var parent := get_parent() 
 @onready var body : PhysicsBody3D = parent.myTarget
 func apply(rotation: Vector3, velocity: Vector3, _delta: float) -> Dictionary:

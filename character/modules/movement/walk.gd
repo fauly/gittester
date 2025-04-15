@@ -3,11 +3,15 @@ extends "res://character/modules/movement/MovementModule.gd"
 @export var properties := {
 	"name": "Walk",
 	"enabled": true,
-	"walk_speed": 5.0
+	"order": 1,
+	"walk_speed": 5.0,
+	"acceleration": 15.0,
+	"deceleration": 10.0
 }
 
 var input_axis := Vector3.ZERO
 var pressed := {}
+var walk_velocity: Vector3 = Vector3.ZERO
 
 const MOVE_MAP := {
 	"move_forward": Vector3(0, 0, -1),
@@ -27,13 +31,26 @@ func _update_input_axis():
 		if pressed.get(action, false):
 			input_axis += MOVE_MAP[action]
 	input_axis = input_axis.normalized()
-	
-func apply(rotation: Vector3, velocity: Vector3, _delta: float) -> Dictionary:
-	var direction := input_axis
-	var rotated := Basis.from_euler(rotation) * direction
 
-	velocity.x = rotated.x * properties["walk_speed"]
-	velocity.z = rotated.z * properties["walk_speed"]
+func apply(rotation: Vector3, velocity: Vector3, delta: float) -> Dictionary:
+	var basis := Basis.from_euler(rotation)
+	var desired = basis * input_axis * properties["walk_speed"]
+
+	var diff = desired - walk_velocity
+	var accel = properties["acceleration"] if input_axis.length() > 0 else properties["deceleration"]
+
+	var change = diff.normalized() * accel * delta
+	if change.length() > diff.length():
+		change = diff
+
+	walk_velocity += change
+
+	var flat = Vector2(walk_velocity.x, walk_velocity.z)
+	if flat.length() > properties["walk_speed"]:
+		flat = flat.normalized() * properties["walk_speed"]
+		walk_velocity.x = flat.x
+		walk_velocity.z = flat.y
+
 	return {
-		"velocity": velocity
+		"velocity": walk_velocity  # Only return this module’s contribution
 	}

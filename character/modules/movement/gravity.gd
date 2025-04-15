@@ -3,6 +3,7 @@ extends "res://character/modules/movement/MovementModule.gd"
 @export var properties := {
 	"name": "Gravity",
 	"enabled": true,
+	"order":100,
 	"gravity": 9.8
 }
 

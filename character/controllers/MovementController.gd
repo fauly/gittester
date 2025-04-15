@@ -12,6 +12,10 @@ var rotation: Vector3 = Vector3.ZERO
 
 func _ready():
 	ut.loadModulesFromDir(self, modules_dir, "res://character/modules/movement/MovementModule.gd", modules)
+	for m in modules:
+		if m.properties["enabled"]:
+			m.order = m.properties.get("order", 0)
+	modules.sort_custom(func(a, b): return a.order > b.order)
 	if MyInputController and MyInputController.has_method("register_target"):
 		MyInputController.register_target(self)
 
@@ -24,34 +28,35 @@ func handle_input(action: String, value: Variant):
 
 func _physics_process(delta: float):
 	rotation = owner.rotation
-	var previous_velocity = velocity
-	var previous_rotation = rotation
+	var accumulated_velocity := Vector3.ZERO
+	var current_rotation := rotation
+
+	var module_index := 0
 
 	for m in modules:
 		if not m.properties["enabled"]:
 			continue
 
-		var result: Dictionary = m.apply(rotation, velocity, delta)
-
-		var updated_velocity = velocity
-		var updated_rotation = rotation
-
-		if result.has("velocity"):
-			updated_velocity = result["velocity"]
-		if result.has("rotation"):
-			updated_rotation = result["rotation"]
+		var result: Dictionary = m.apply(current_rotation, velocity, delta)
 
 		var changes := []
+		var mod_name = m.properties.get("name", m.name)
 
-		if updated_velocity != previous_velocity:
-			changes.append(["velocity changed: ",updated_velocity])
-		if updated_rotation != previous_rotation:
-			changes.append(["rotation changed: ",updated_rotation])
+		if result.has("velocity"):
+			var contribution : Vector3 = result["velocity"]
+			accumulated_velocity += contribution
+			changes.append("velocity += " + str(contribution))
 
-		#if changes.size() > 0:
-			#print("🧩 [{0}] → {1}".format([m.properties.get("name"), str(m.name)]), ", ".join(changes))
+		if result.has("rotation"):
+			var new_rot : Vector3 = result["rotation"]
+			if new_rot != current_rotation:
+				current_rotation = new_rot
+				changes.append("rotation → " + str(new_rot))
 
-		velocity = updated_velocity
-		rotation = updated_rotation
-		previous_velocity = velocity
-		previous_rotation = rotation
+		if changes.size() > 0:
+			print("🧩 #{2} [{0}] → {1}".format([m.properties.get("name"), str(m.name),module_index]), ", ".join(changes))
+		
+		module_index += 1
+	velocity = accumulated_velocity
+	rotation = current_rotation
+	#print("✅ Final Velocity: ", velocity)
