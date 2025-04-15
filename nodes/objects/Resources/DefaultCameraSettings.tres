@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="CameraSettings" load_steps=2 format=3 uid="uid://dw0lbb08yc1dg"]
 
-[ext_resource type="Script" uid="uid://k8ovsxnhf1xe" path="res://nodes/player/Resources/CameraSettings.gd" id="1_mj2xt"]
+[ext_resource type="Script" uid="uid://k8ovsxnhf1xe" path="res://nodes/objects/Resources/CameraSettings.gd" id="1_mj2xt"]
 
 [resource]
 script = ExtResource("1_mj2xt")
