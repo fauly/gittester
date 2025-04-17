@@ -1,9 +1,10 @@
-extends "res://character/modules/movement/MovementModule.gd"
+@tool
+extends "res://character/modules/MovementModule.gd"
 
 @export var properties := {
 	"name": "Walk",
 	"enabled": true,
-	"order": 1,
+	"order": 5,
 	"walk_speed": 5.0,
 	"acceleration": 15.0,
 	"deceleration": 10.0
@@ -32,7 +33,10 @@ func _update_input_axis():
 			input_axis += MOVE_MAP[action]
 	input_axis = input_axis.normalized()
 
-func apply(rotation: Vector3, velocity: Vector3, delta: float) -> Dictionary:
+func apply(motion_state: Dictionary, delta: float) -> Dictionary:
+	var rotation = motion_state.get("rotation", Vector3.ZERO)
+	var velocity = motion_state.get("velocity", Vector3.ZERO)
+
 	var basis := Basis.from_euler(rotation)
 	var desired = basis * input_axis * properties["walk_speed"]
 
@@ -45,12 +49,14 @@ func apply(rotation: Vector3, velocity: Vector3, delta: float) -> Dictionary:
 
 	walk_velocity += change
 
+	# Clamp horizontal movement
 	var flat = Vector2(walk_velocity.x, walk_velocity.z)
 	if flat.length() > properties["walk_speed"]:
 		flat = flat.normalized() * properties["walk_speed"]
 		walk_velocity.x = flat.x
 		walk_velocity.z = flat.y
 
-	return {
-		"velocity": walk_velocity  # Only return this module’s contribution
-	}
+	# Update velocity (preserve y component)
+	walk_velocity.y = velocity.y
+	motion_state["velocity"] = walk_velocity
+	return motion_state

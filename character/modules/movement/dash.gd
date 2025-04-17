@@ -1,4 +1,5 @@
-extends "res://character/modules/movement/MovementModule.gd"
+@tool
+extends "res://character/modules/MovementModule.gd"
 
 @export var properties := {
 	"name": "Dash",
@@ -21,11 +22,11 @@ func handle_input(action: String, value: Variant):
 			dash_time_left = properties["dash_duration"]
 			cooldown_time_left = properties["dash_cooldown"]
 
-func apply(_rotation: Vector3, velocity: Vector3, delta: float) -> Dictionary:
+func apply(motion_state: Dictionary, delta: float) -> Dictionary:
 	if cooldown_time_left > 0.0:
 		cooldown_time_left -= delta
 
-	var contribution := Vector3.ZERO
+	var velocity: Vector3 = motion_state.get("velocity", Vector3.ZERO)
 
 	if is_dashing:
 		dash_time_left -= delta
@@ -35,11 +36,10 @@ func apply(_rotation: Vector3, velocity: Vector3, delta: float) -> Dictionary:
 			if horiz.length() > 0:
 				last_dash_direction = horiz.normalized()
 
-			# Apply boost in direction of movement
-			contribution = last_dash_direction * horiz.length() * (properties["dash_multiplier"] - 1.0)
+			var contribution = last_dash_direction * horiz.length() * (properties["dash_multiplier"] - 1.0)
+			velocity += contribution
 		else:
 			is_dashing = false
 
-	return {
-		"velocity": contribution
-	}
+	motion_state["velocity"] = velocity
+	return motion_state

@@ -1,62 +1,57 @@
 extends Node
 class_name MovementController
 
-@export var modules_dir: String = "res://Character/Modules/Movement"
 @export var MyInputController : InputController
 @export var myTarget: PhysicsBody3D
 
-@export var modules: Array[Node] = []
-
 var velocity: Vector3 = Vector3.ZERO
 var rotation: Vector3 = Vector3.ZERO
+var modules: Array = []
 
 func _ready():
-	ut.loadModulesFromDir(self, modules_dir, "res://character/modules/movement/MovementModule.gd", modules)
+	modules = ModuleManager.getModules(ModuleManager.TYPE_MOVEMENT)
+	
 	for m in modules:
-		if m.properties["enabled"]:
-			m.order = m.properties.get("order", 0)
-	modules.sort_custom(func(a, b): return a.order > b.order)
+		m.body = myTarget
+	
 	if MyInputController and MyInputController.has_method("register_target"):
 		MyInputController.register_target(self)
 
 func handle_input(action: String, value: Variant):
 	for m in modules:
-		if m.properties.has("enabled") and m.properties["enabled"]:
-			if m.has_method("handle_input"):
-				m.handle_input(action, value)
-
+		if m.has_method("handle_input"):
+			m.handle_input(action, value)
+signal debug_update(debug_data: Array)
 
 func _physics_process(delta: float):
-	rotation = owner.rotation
-	var accumulated_velocity := Vector3.ZERO
-	var current_rotation := rotation
+	var debug_log := []
 
-	var module_index := 0
+	var motion_state := {
+		"velocity": velocity,
+		"rotation": rotation
+	}
 
-	for m in modules:
-		if not m.properties["enabled"]:
-			continue
+	for i in range(modules.size()):
+		var m = modules[i]
+		if m.has_method("apply"):
+			var before := motion_state.duplicate(true)
+			motion_state = m.apply(motion_state, delta)
+			var after := motion_state.duplicate(true)
 
-		var result: Dictionary = m.apply(current_rotation, velocity, delta)
+			debug_log.append({
+				"name": m.properties.get("name", "Unnamed"),
+				"before": before,
+				"after": after
+			})
 
-		var changes := []
-		var mod_name = m.properties.get("name", m.name)
+	# Move character
+	if myTarget:
+		myTarget.velocity = motion_state.get("velocity", Vector3.ZERO)
+		myTarget.rotation = motion_state.get("rotation", Vector3.ZERO)
+		myTarget.move_and_slide()
 
-		if result.has("velocity"):
-			var contribution : Vector3 = result["velocity"]
-			accumulated_velocity += contribution
-			changes.append("velocity += " + str(contribution))
+	velocity = motion_state.get("velocity", velocity)
+	rotation = motion_state.get("rotation", rotation)
 
-		if result.has("rotation"):
-			var new_rot : Vector3 = result["rotation"]
-			if new_rot != current_rotation:
-				current_rotation = new_rot
-				changes.append("rotation → " + str(new_rot))
-
-		if changes.size() > 0:
-			print("🧩 #{2} [{0}] → {1}".format([m.properties.get("name"), str(m.name),module_index]), ", ".join(changes))
-		
-		module_index += 1
-	velocity = accumulated_velocity
-	rotation = current_rotation
-	#print("✅ Final Velocity: ", velocity)
+	# Emit debug data
+	emit_signal("debug_update", debug_log)

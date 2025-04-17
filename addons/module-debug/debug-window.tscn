@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://bw6o3ylqfvwc6"]
+
+[ext_resource type="Script" uid="uid://cgk5cevivcu0d" path="res://addons/module-debug/debug-window.gd" id="1_x1fnu"]
+
+[node name="Module Debugger" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_x1fnu")

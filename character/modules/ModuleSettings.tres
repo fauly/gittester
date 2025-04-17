@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="ModuleSettings" load_steps=2 format=3 uid="uid://uomfa182yp74"]
+
+[ext_resource type="Script" uid="uid://b0lf5bnfbf5au" path="res://character/modules/ModuleSettings.gd" id="1_rmxdw"]
+
+[resource]
+script = ExtResource("1_rmxdw")
+settings = {
+"res://Character/Modules/Camera/firstPerson.gd": {
+"enabled": true,
+"order": 1.0
+},
+"res://Character/Modules/Camera/thirdPerson.gd": {
+"distance": -4.0,
+"enabled": true,
+"order": 2.0,
+"use_character_yaw": true
+},
+"res://Character/Modules/Movement/dash.gd": {
+"order": 3.0
+},
+"res://Character/Modules/Movement/gravity.gd": {
+"order": 5.0
+},
+"res://Character/Modules/Movement/jump.gd": {
+"jump_force": 8.0,
+"name": "Jump",
+"order": 4.0
+},
+"res://Character/Modules/Movement/walk.gd": {
+"enabled": true,
+"order": 1.0
+}
+}

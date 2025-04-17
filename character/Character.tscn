@@ -27,7 +27,7 @@ MyInputController = NodePath("../InputController")
 myTarget = NodePath("../CharacterBody3D")
 
 [node name="CameraRig" parent="." node_paths=PackedStringArray("MyInputController", "character") instance=ExtResource("4_3ec4b")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7, 4)
 MyInputController = NodePath("../InputController")
 character = NodePath("../CharacterBody3D")
 
