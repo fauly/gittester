@@ -20,7 +20,7 @@ Looking at character scene abstractly:
 --- Locked in space - only position based
 --- Cutscene (Full animation rotation and position based with keyframes)
 --- Effect (can be any other file that applies something not rotation or position based, will take input from wherever we are in the pipeline visually)
----Transitioner that manages the shifting between modes.
+--- Transitioner that manages the shifting between modes. 
 ---- Modules for the transitioner describe how we get from one state to the next.
 --- Shaderer to manage shaders as modules
 
