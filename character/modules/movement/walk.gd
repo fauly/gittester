@@ -7,7 +7,7 @@ extends "res://character/modules/MovementModule.gd"
 	"order": 5,
 	"walk_speed": 5.0,
 	"acceleration": 15.0,
-	"deceleration": 10.0
+	"deceleration": 40.0
 }
 
 var input_axis := Vector3.ZERO
@@ -49,14 +49,12 @@ func apply(motion_state: Dictionary, delta: float) -> Dictionary:
 
 	walk_velocity += change
 
-	# Clamp horizontal movement
 	var flat = Vector2(walk_velocity.x, walk_velocity.z)
 	if flat.length() > properties["walk_speed"]:
 		flat = flat.normalized() * properties["walk_speed"]
 		walk_velocity.x = flat.x
 		walk_velocity.z = flat.y
 
-	# Update velocity (preserve y component)
 	walk_velocity.y = velocity.y
 	motion_state["velocity"] = walk_velocity
 	return motion_state

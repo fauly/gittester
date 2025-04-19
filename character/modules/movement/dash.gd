@@ -1,9 +1,11 @@
 @tool
 extends "res://character/modules/MovementModule.gd"
 
+# A dash that checks character forward and adds a burst of velocity to the character in that direction
+
 @export var properties := {
 	"name": "Dash",
-	"enabled": true,
+	"enabled": false,
 	"order": 10,
 	"dash_multiplier": 3.0,
 	"dash_duration": 0.2,
