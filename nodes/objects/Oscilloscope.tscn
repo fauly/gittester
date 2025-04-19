@@ -1,0 +1,159 @@
+[gd_scene load_steps=4 format=3 uid="uid://7cblt582ra3b"]
+
+[ext_resource type="AudioStream" uid="uid://c4mfgdaertine" path="res://content/music/MixtapeForHamish.wav" id="1_ek6kt"]
+[ext_resource type="Script" uid="uid://b02ns6uch1fng" path="res://nodes/objects/wave.gd" id="2_ek6kt"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_tpobe"]
+viewport_path = NodePath("SubViewport")
+
+[node name="Oscilloscope" type="Node3D"]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("1_ek6kt")
+autoplay = true
+
+[node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(1080, 150)
+
+[node name="Wave" type="Node2D" parent="SubViewport"]
+script = ExtResource("2_ek6kt")
+
+[node name="Window" type="Window" parent="."]
+title = "Oscilliscope"
+position = Vector2i(0, 36)
+size = Vector2i(1080, 200)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Window"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="Window/VBoxContainer"]
+layout_mode = 2
+texture = SubResource("ViewportTexture_tpobe")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Window/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="ProccessAudio" type="CheckButton" parent="Window/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "Tesselation"
+button_pressed = true
+text = "Process"
+
+[node name="Mono" type="CheckButton" parent="Window/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "Tesselation"
+button_pressed = true
+text = "Mono"
+
+[node name="Amplitude" type="HSlider" parent="Window/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 30)
+layout_mode = 2
+size_flags_vertical = 8
+tooltip_text = "Interval"
+min_value = 1.0
+max_value = 5.0
+step = 0.1
+value = 1.0
+
+[node name="Label" type="Label" parent="Window/VBoxContainer/HBoxContainer/Amplitude"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+offset_top = -30.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "Amplitude"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Degrees" type="HSlider" parent="Window/VBoxContainer/HBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(100, 30)
+layout_mode = 2
+size_flags_vertical = 8
+tooltip_text = "Degrees"
+min_value = 1.0
+max_value = 50.0
+value = 4.0
+
+[node name="Bias" type="HSlider" parent="Window/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 30)
+layout_mode = 2
+size_flags_vertical = 8
+tooltip_text = "Smoothness"
+max_value = 1.0
+step = 0.1
+value = 0.5
+
+[node name="Label" type="Label" parent="Window/VBoxContainer/HBoxContainer/Bias"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+offset_top = -30.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "Smoothness"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Thickness" type="HSlider" parent="Window/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 30)
+layout_mode = 2
+size_flags_vertical = 8
+tooltip_text = "Thickness"
+max_value = 10.0
+step = 0.1
+value = 2.0
+
+[node name="Label" type="Label" parent="Window/VBoxContainer/HBoxContainer/Thickness"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+offset_top = -30.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "Thickness"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Segments" type="SpinBox" parent="Window/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+tooltip_text = "Sample Count"
+max_value = 512.0
+value = 8.0
+allow_greater = true
+allow_lesser = true
+alignment = 1
+update_on_text_changed = true
+
+[node name="SampleCount" type="SpinBox" parent="Window/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+tooltip_text = "Sample Count"
+max_value = 512.0
+value = 256.0
+allow_greater = true
+allow_lesser = true
+alignment = 1
+update_on_text_changed = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Window/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[connection signal="toggled" from="Window/VBoxContainer/HBoxContainer/ProccessAudio" to="SubViewport/Wave" method="_on_process_audio_toggled"]
+[connection signal="toggled" from="Window/VBoxContainer/HBoxContainer/Mono" to="SubViewport/Wave" method="_on_mono_toggled"]
+[connection signal="value_changed" from="Window/VBoxContainer/HBoxContainer/Amplitude" to="SubViewport/Wave" method="_on_amplitude_value_changed"]
+[connection signal="value_changed" from="Window/VBoxContainer/HBoxContainer/Degrees" to="SubViewport/Wave" method="_on_degrees_value_changed"]
+[connection signal="value_changed" from="Window/VBoxContainer/HBoxContainer/Bias" to="SubViewport/Wave" method="_on_bias_value_changed"]
+[connection signal="value_changed" from="Window/VBoxContainer/HBoxContainer/Thickness" to="SubViewport/Wave" method="_on_thickness_value_changed"]
+[connection signal="value_changed" from="Window/VBoxContainer/HBoxContainer/Segments" to="SubViewport/Wave" method="_on_segments_value_changed"]
+[connection signal="value_changed" from="Window/VBoxContainer/HBoxContainer/SampleCount" to="SubViewport/Wave" method="_on_sample_count_value_changed"]

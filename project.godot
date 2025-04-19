@@ -15,6 +15,10 @@ run/main_scene="uid://d1rqi07fgbdq2"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[audio]
+
+driver/enable_input=true
+
 [autoload]
 
 file="*res://utilities/file.gd"

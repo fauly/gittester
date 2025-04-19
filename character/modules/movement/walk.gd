@@ -10,10 +10,6 @@ extends "res://character/modules/MovementModule.gd"
 	"deceleration": 40.0
 }
 
-var input_axis := Vector3.ZERO
-var pressed := {}
-var walk_velocity: Vector3 = Vector3.ZERO
-
 const MOVE_MAP := {
 	"move_forward": Vector3(0, 0, -1),
 	"move_back":    Vector3(0, 0,  1),
@@ -21,40 +17,47 @@ const MOVE_MAP := {
 	"move_right":   Vector3( 1, 0, 0),
 }
 
+var pressed := {}
+var input_axis := Vector3.ZERO
+
+var walk_velocity_contrib := Vector2.ZERO
+
 func handle_input(action: String, value: Variant):
 	if action in MOVE_MAP:
 		pressed[action] = value
 		_update_input_axis()
 
 func _update_input_axis():
-	input_axis = Vector3.ZERO
-	for action in MOVE_MAP:
-		if pressed.get(action, false):
-			input_axis += MOVE_MAP[action]
-	input_axis = input_axis.normalized()
+	var axis = Vector3.ZERO
+	for a in MOVE_MAP.keys():
+		if pressed.get(a, false):
+			axis += MOVE_MAP[a]
+	input_axis = axis.normalized() if axis.length_squared() > 0.0 else Vector3.ZERO
 
 func apply(motion_state: Dictionary, delta: float) -> Dictionary:
-	var rotation = motion_state.get("rotation", Vector3.ZERO)
-	var velocity = motion_state.get("velocity", Vector3.ZERO)
+	# 1 Grab the full velocity so far (including dash, gravity, etc.)
+	var velocity: Vector3 = motion_state.get("velocity", Vector3.ZERO)
 
-	var basis := Basis.from_euler(rotation)
-	var desired = basis * input_axis * properties["walk_speed"]
+	# 2 Compute world‑space desired walk velocity (horizontal only)
+	var rot = motion_state.get("rotation", Vector3.ZERO)
+	var basis = Basis.from_euler(rot)
+	var world_input = basis * input_axis  # local→world
+	var desired = Vector2(world_input.x, world_input.z) * properties["walk_speed"]
 
-	var diff = desired - walk_velocity
-	var accel = properties["acceleration"] if input_axis.length() > 0 else properties["deceleration"]
+	# 3 Keep track of the old contrib so we can diff it out
+	var old = walk_velocity_contrib
 
-	var change = diff.normalized() * accel * delta
-	if change.length() > diff.length():
-		change = diff
+	# 4 Accelerate or decelerate walk_velocity_contrib toward desired
+	var rate = properties["acceleration"] if input_axis.length() > 0.0 else properties["deceleration"]
+	walk_velocity_contrib = walk_velocity_contrib.move_toward(desired, rate * delta)
 
-	walk_velocity += change
+	# 5 Compute the *change* this frame
+	var delta_contrib = walk_velocity_contrib - old
 
-	var flat = Vector2(walk_velocity.x, walk_velocity.z)
-	if flat.length() > properties["walk_speed"]:
-		flat = flat.normalized() * properties["walk_speed"]
-		walk_velocity.x = flat.x
-		walk_velocity.z = flat.y
+	# 6 Apply only that delta to the motion_state
+	velocity.x += delta_contrib.x
+	velocity.z += delta_contrib.y
 
-	walk_velocity.y = velocity.y
-	motion_state["velocity"] = walk_velocity
+	# 7 Write back
+	motion_state["velocity"] = velocity
 	return motion_state

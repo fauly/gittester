@@ -37,7 +37,6 @@ func _physics_process(delta: float):
 			var before := motion_state.duplicate(true)
 			motion_state = m.apply(motion_state, delta)
 			var after := motion_state.duplicate(true)
-
 			debug_log.append({
 				"name": m.properties.get("name", "Unnamed"),
 				"before": before,

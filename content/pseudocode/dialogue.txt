@@ -4,18 +4,63 @@
 $ means a classes variable
 
 ---- ~Dialogue
-$Sequence : Array[ #Statement ]
+$Sequence       : Array[#Statement]          # ordered list of statements in this dialogue  
+$CurrentIndex   : Int                        # which statement is active  
+$Context        : Dictionary[String->Variant]# runtime variables (flags, inventory, etc.)  
+$IsActive       : Bool                       # true while dialogue is playing  
+$OnStart        : Signal                    # signal when dialogue begins  
+$OnComplete     : Signal                    # signal when dialogue ends  
+$OnAdvance 	    : Signal					# signal on dialogue advance
+
+start() : void  
+    — Initialize context, set CurrentIndex to 0, fire OnStart signal  
+advance() : void  
+    — Move to next statement: fire OnExit for previous, evaluate Conditions, fire OnEnter for new  
+reset() : void  
+    — Clear CurrentIndex and Context back to defaults  
+is_active() -> Bool  
+    — True if CurrentIndex points inside Sequence  
+get_current_statement() -> #Statement  
+    — Return the active statement from Sequence  
+set_context(key: String, value: Variant) : void  
+    — Write a runtime variable into Context  
+get_context(key: String) -> Variant  
+    — Read a runtime variable from Context  
+on(event_name: String, callback: FuncRef) : void  
+    — Register for “start” , "advance" or “complete” events  
 
 ---- !Statement
-$UID: String
-$Owners: Array [Node]
-$Targets: Array [Node]
-#Options: Resource
-$Text: MultilineString
-$Next: [$Sequence, indexOfStatement]
+$UID            : String                     # unique identifier linked to the resource uid
+$Owners         : Array[Node]                # who “speaks” this statement
+$Targets        : Array[Node]                # who is listening/affected  
+#Style          : Style                      # UI styling resource
+#Options        : Options                    # display & behavior flags  
+$Text           : MultilineString            # the actual BBCode text  
+$Next           : Tuple[$Sequence, Int]      # (sequence ref, index of next statement)  
+
+$Conditions     : Array[Condition]           # optional preconditions  
+$OnEnter        : FuncRef                    # callback when shown  
+$OnExit         : FuncRef                    # callback when dismissed  
+
+$AnimationTags      : Array[String]                # emotion tags parsed from $Text (e.g. "~!sad", "~!happy")  
+$FunctionCalls      : Array[String]                # custom function calls parsed from $Text (e.g. `functionCall(arg1,arg2)`)  
 
 ---- !Options
-$alignText : left,center,right
+$alignText           : Enum(left, center, right) # text alignment  
+$allowSkip           : Bool                      # can player skip this?  
+$timeout             : Float                     # auto-advance seconds (0 = never)  
+$showContinuePrompt  : Bool                      # show “Press any key…”  
 
 ---- !Question extends !Statement
-$Responses: Dictionary {response : callback}
+$Responses        : Dictionary[String->FuncRef]   # “reply text” → callback  
+$defaultResponse  : String                        # fallback choice if none picked  
+$shuffleResponses : Bool                          # randomize the order of replies  
+$onTimeout        : String                        # response key if timeout occurs   
+
+---- !Style
+$font         : Font        # font resource  
+$fontSize     : Int         # point size  
+$fontColor    : Color       # text color  
+$background   : Texture     # behind-text graphic  
+$padding      : Margin      # UI padding values  
+$border       : StyleBox    # border styling
