@@ -1,0 +1,21 @@
+~ means a class
+! means a resource
+# means a instanced Resource
+$ means a classes variable
+
+---- ~Dialogue
+$Sequence : Array[ #Statement ]
+
+---- !Statement
+$UID: String
+$Owners: Array [Node]
+$Targets: Array [Node]
+#Options: Resource
+$Text: MultilineString
+$Next: [$Sequence, indexOfStatement]
+
+---- !Options
+$alignText : left,center,right
+
+---- !Question extends !Statement
+$Responses: Dictionary {response : callback}
