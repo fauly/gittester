@@ -35,7 +35,6 @@ func apply(motion_state: Dictionary, delta: float) -> Dictionary:
 		if dash_time_left > 0.0:
 			var dash_speed = velocity.length() * (properties["dash_multiplier"] - 1.0)
 			velocity += dash_direction * dash_speed
-			print('dash velocity', velocity)
 		else:
 			is_dashing = false
 
